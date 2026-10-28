@@ -1,0 +1,120 @@
+[
+  {
+    "file": "stl/01-base.stl",
+    "quantity": 1,
+    "part": "base",
+    "parameters": {}
+  },
+  {
+    "file": "stl/02-deck.stl",
+    "quantity": 1,
+    "part": "deck",
+    "parameters": {}
+  },
+  {
+    "file": "stl/03-cup.stl",
+    "quantity": 8,
+    "part": "cup",
+    "parameters": {}
+  },
+  {
+    "file": "stl/04-lid-1.stl",
+    "quantity": 1,
+    "part": "lid",
+    "parameters": {
+      "slot_number": 1
+    }
+  },
+  {
+    "file": "stl/04-lid-2.stl",
+    "quantity": 1,
+    "part": "lid",
+    "parameters": {
+      "slot_number": 2
+    }
+  },
+  {
+    "file": "stl/04-lid-3.stl",
+    "quantity": 1,
+    "part": "lid",
+    "parameters": {
+      "slot_number": 3
+    }
+  },
+  {
+    "file": "stl/04-lid-4.stl",
+    "quantity": 1,
+    "part": "lid",
+    "parameters": {
+      "slot_number": 4
+    }
+  },
+  {
+    "file": "stl/04-lid-5.stl",
+    "quantity": 1,
+    "part": "lid",
+    "parameters": {
+      "slot_number": 5
+    }
+  },
+  {
+    "file": "stl/04-lid-6.stl",
+    "quantity": 1,
+    "part": "lid",
+    "parameters": {
+      "slot_number": 6
+    }
+  },
+  {
+    "file": "stl/04-lid-7.stl",
+    "quantity": 1,
+    "part": "lid",
+    "parameters": {
+      "slot_number": 7
+    }
+  },
+  {
+    "file": "stl/04-lid-8.stl",
+    "quantity": 1,
+    "part": "lid",
+    "parameters": {
+      "slot_number": 8
+    }
+  },
+  {
+    "file": "stl/05-magnet-cap.stl",
+    "quantity": 8,
+    "part": "magnet_cap",
+    "parameters": {}
+  },
+  {
+    "file": "stl/06-electronics-carrier.stl",
+    "quantity": 1,
+    "part": "carrier",
+    "parameters": {}
+  },
+  {
+    "file": "stl/07-oled-backplate.stl",
+    "quantity": 1,
+    "part": "oled_backplate",
+    "parameters": {}
+  },
+  {
+    "file": "stl/08-oled-spacer.stl",
+    "quantity": 4,
+    "part": "spacer",
+    "parameters": {}
+  },
+  {
+    "file": "stl/09-fit-coupon.stl",
+    "quantity": 1,
+    "part": "coupon",
+    "parameters": {}
+  },
+  {
+    "file": "stl/10-single-cell-fixture.stl",
+    "quantity": 1,
+    "part": "one_cell_fixture",
+    "parameters": {}
+  }
+]

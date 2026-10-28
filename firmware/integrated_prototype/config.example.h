@@ -1,0 +1,7 @@
+#pragma once
+#define WIFI_SSID "YOUR_WIFI_NAME"
+#define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
+#define SERVER_BASE_URL "https://smartpb.me"
+#define DEVICE_ID "YOUR_REGISTERED_DEVICE_ID"
+#define DEVICE_API_KEY "YOUR_DEVICE_API_KEY_IF_REQUIRED"
+#define FIRMWARE_VERSION "esp32-s3-prototype-r1"

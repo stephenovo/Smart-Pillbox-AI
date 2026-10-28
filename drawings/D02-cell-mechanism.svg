@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="690" viewBox="0 0 1000 690">
+<title>D02 单格配合与磁铁</title>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="PingFang SC,Noto Sans CJK SC,Arial,sans-serif">
+<text x="30" y="32" font-size="24" fill="#193239" text-anchor="start">D02 / 单格配合 · 剖面示意，不按比例</text>
+<rect x="70" y="250" width="410" height="24" rx="0" fill="#D8E2E0" stroke="#193239" stroke-width="2"/>
+<rect x="190" y="274" width="170" height="166" rx="0" fill="#F3F0E5" stroke="#193239" stroke-width="2"/>
+<rect x="205" y="274" width="140" height="151" rx="0" fill="white" stroke="#193239" stroke-width="2"/>
+<rect x="178" y="238" width="194" height="12" rx="0" fill="#F3F0E5" stroke="#193239" stroke-width="2"/>
+<rect x="145" y="208" width="260" height="16" rx="0" fill="#C4D2CF" stroke="#193239" stroke-width="2"/>
+<rect x="130" y="194" width="55" height="30" rx="0" fill="#C4D2CF" stroke="#193239" stroke-width="2"/>
+<rect x="140" y="210" width="33" height="10" rx="0" fill="#A4A9AB" stroke="#193239" stroke-width="2"/>
+<rect x="140" y="220" width="33" height="4" rx="0" fill="#137C78" stroke="#193239" stroke-width="2"/>
+<rect x="135" y="238" width="45" height="12" rx="0" fill="#8BA5A0" stroke="#193239" stroke-width="2"/>
+<circle cx="410" cy="210" r="21" fill="#D8E2E0" stroke="#193239" stroke-width="2"/>
+<circle cx="410" cy="210" r="8" fill="white" stroke="#193239" stroke-width="2"/>
+<line x1="100" y1="110" x2="155" y2="211" stroke="#137C78" stroke-width="2"/>
+<polygon points="155,211 147.68632010291722,205.75499415033624 154.56229789442776,202.01064980842455" fill="#137C78" stroke="#137C78"/>
+<text x="45" y="85" font-size="20" fill="#193239" text-anchor="start">6×2 磁铁 + 封片</text>
+<line x1="77" y1="341" x2="150" y2="246" stroke="#137C78" stroke-width="2"/>
+<polygon points="150,246 148.16625029658516,254.81120661573806 141.95806765664864,250.04070837662894" fill="#137C78" stroke="#137C78"/>
+<text x="30" y="372" font-size="20" fill="#193239" text-anchor="start">两线干簧管</text>
+<line x1="463" y1="370" x2="350" y2="426" stroke="#137C78" stroke-width="2"/>
+<polygon points="350,426 355.5229903306575,418.89390558693003 358.9995408203104,425.9090878249797" fill="#137C78" stroke="#137C78"/>
+<text x="390" y="402" font-size="20" fill="#193239" text-anchor="start">药杯底厚2</text>
+<text x="70" y="480" font-size="21" fill="#193239" text-anchor="start">杯身40×38；上盖孔40.6×38.6</text>
+<text x="70" y="514" font-size="20" fill="#193239" text-anchor="start">药杯凸缘44×42；杯身深22；凸缘厚2</text>
+<text x="70" y="548" font-size="20" fill="#193239" text-anchor="start">磁铁盲孔Ø6.2；封片Ø6.1×0.65</text>
+<text x="70" y="582" font-size="19" fill="#C55343" text-anchor="start">磁场距离按实物测试，不能用外形尺寸替代验证</text>
+<text x="575" y="105" font-size="22" fill="#137C78" text-anchor="start">铰链俯视 / 轴向</text>
+<line x1="580" y1="207" x2="945" y2="207" stroke="#607780" stroke-width="4"/>
+<rect x="592" y="178" width="63" height="58" rx="0" fill="#EDF3F2" stroke="#193239" stroke-width="2"/>
+<rect x="665" y="178" width="190" height="58" rx="0" fill="#C4D2CF" stroke="#193239" stroke-width="2"/>
+<rect x="865" y="178" width="63" height="58" rx="0" fill="#EDF3F2" stroke="#193239" stroke-width="2"/>
+<text x="624" y="266" font-size="18" fill="#193239" text-anchor="middle">固定耳</text>
+<text x="760" y="266" font-size="18" fill="#193239" text-anchor="middle">盖轴套</text>
+<text x="898" y="266" font-size="18" fill="#193239" text-anchor="middle">固定耳</text>
+<text x="580" y="325" font-size="19" fill="#193239" text-anchor="start">两固定耳之间26；中轴套长24</text>
+<text x="580" y="362" font-size="19" fill="#193239" text-anchor="start">轴向间隙每侧1；孔Ø2.4</text>
+<text x="580" y="399" font-size="19" fill="#193239" text-anchor="start">金属销Ø2×45，两端做止退</text>
+<text x="580" y="460" font-size="20" fill="#137C78" text-anchor="start">先试一个杯 + 一个盖 + 一个传感器</text>
+<text x="580" y="500" font-size="18" fill="#193239" text-anchor="start">此版自重闭合，无锁扣、无防水密封</text>
+<text x="580" y="537" font-size="18" fill="#193239" text-anchor="start">开盖100°是展示角度，不是机械限位</text>
+</g></svg>

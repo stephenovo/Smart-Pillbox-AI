@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="670" viewBox="0 0 1000 670">
+<title>D03 电气系统总览</title>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="PingFang SC,Noto Sans CJK SC,Arial,sans-serif">
+<text x="30" y="32" font-size="24" fill="#193239" text-anchor="start">D03 / 电气系统 · ESP32-S3 + 洞洞板</text>
+<rect x="360" y="190" width="285" height="285" rx="12" fill="#EDF3F2" stroke="#137C78" stroke-width="2"/>
+<text x="502" y="232" font-size="24" fill="#193239" text-anchor="middle">ESP32-S3 开发板</text>
+<rect x="380" y="78" width="245" height="60" rx="8" fill="#F7F4E9" stroke="#607780" stroke-width="2"/>
+<text x="502" y="115" font-size="21" fill="#193239" text-anchor="middle">USB 5V → 板载稳压</text>
+<line x1="502" y1="138" x2="502" y2="190" stroke="#137C78" stroke-width="2"/>
+<polygon points="502,190 498.0853101929989,181.8959760788259 505.9146898070011,181.8959760788259" fill="#137C78" stroke="#137C78"/>
+<rect x="25" y="205" width="280" height="115" rx="8" fill="white" stroke="#607780" stroke-width="2"/>
+<text x="165" y="245" font-size="22" fill="#193239" text-anchor="middle">8 路无源干簧管</text>
+<text x="165" y="283" font-size="18" fill="#607780" text-anchor="middle">3V3 / 10k下拉 / 1k串联</text>
+<rect x="25" y="385" width="280" height="115" rx="8" fill="white" stroke="#607780" stroke-width="2"/>
+<text x="165" y="425" font-size="22" fill="#193239" text-anchor="middle">8 路绿色LED</text>
+<text x="165" y="463" font-size="18" fill="#607780" text-anchor="middle">每灯330Ω串联</text>
+<line x1="305" y1="262" x2="360" y2="262" stroke="#326DA8" stroke-width="2"/>
+<polygon points="360,262 351.8959760788259,265.9146898070011 351.8959760788259,258.0853101929989" fill="#326DA8" stroke="#326DA8"/>
+<line x1="360" y1="432" x2="305" y2="432" stroke="#137C78" stroke-width="2"/>
+<polygon points="305,432 313.1040239211741,428.0853101929989 313.1040239211741,435.9146898070011" fill="#137C78" stroke="#137C78"/>
+<rect x="700" y="180" width="275" height="93" rx="8" fill="white" stroke="#607780" stroke-width="2"/>
+<text x="837" y="217" font-size="19" fill="#193239" text-anchor="middle">OLED：SDA41 / SCL42</text>
+<text x="837" y="248" font-size="17" fill="#607780" text-anchor="middle">VCC=3V3，四线</text>
+<line x1="645" y1="224" x2="700" y2="224" stroke="#137C78" stroke-width="2"/>
+<polygon points="700,224 691.8959760788259,227.91468980700108 691.8959760788259,220.08531019299892" fill="#137C78" stroke="#137C78"/>
+<rect x="700" y="312" width="275" height="93" rx="8" fill="white" stroke="#607780" stroke-width="2"/>
+<text x="837" y="349" font-size="19" fill="#193239" text-anchor="middle">红LED：GPIO39</text>
+<text x="837" y="380" font-size="17" fill="#607780" text-anchor="middle">串联330Ω</text>
+<line x1="645" y1="356" x2="700" y2="356" stroke="#137C78" stroke-width="2"/>
+<polygon points="700,356 691.8959760788259,359.9146898070011 691.8959760788259,352.0853101929989" fill="#137C78" stroke="#137C78"/>
+<rect x="700" y="444" width="275" height="93" rx="8" fill="white" stroke="#607780" stroke-width="2"/>
+<text x="837" y="481" font-size="19" fill="#193239" text-anchor="middle">压电驱动：GPIO40</text>
+<text x="837" y="512" font-size="17" fill="#607780" text-anchor="middle">2N3904 + 外部方波</text>
+<line x1="645" y1="488" x2="700" y2="488" stroke="#137C78" stroke-width="2"/>
+<polygon points="700,488 691.8959760788259,491.9146898070011 691.8959760788259,484.0853101929989" fill="#137C78" stroke="#137C78"/>
+<text x="502" y="288" font-size="20" fill="#326DA8" text-anchor="middle">GPIO输入：4,5,6,7</text>
+<text x="502" y="323" font-size="20" fill="#326DA8" text-anchor="middle">15,16,17,18</text>
+<text x="502" y="377" font-size="20" fill="#137C78" text-anchor="middle">GPIO灯：8,9,10,11</text>
+<text x="502" y="412" font-size="20" fill="#137C78" text-anchor="middle">12,13,14,21</text>
+<line x1="70" y1="564" x2="930" y2="564" stroke="#607780" stroke-width="3"/>
+<text x="502" y="600" font-size="21" fill="#193239" text-anchor="middle">所有支路共地；外接信号均为3.3V逻辑</text>
+<text x="502" y="636" font-size="19" fill="#C55343" text-anchor="middle">只从USB单路供电；不同时接另一组5V；本版没有锂电池</text>
+</g></svg>

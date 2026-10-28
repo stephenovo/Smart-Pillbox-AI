@@ -1,0 +1,44 @@
+﻿接口,针号,网络,去向,备注
+JR1,1,3V3,干簧开关一端,不接5V
+JR1,2,RAW1,10k下拉至GND；1k串联至GPIO4,磁铁近时触点闭合
+JL1,1,GPIO8经330Ω,绿色LED1阳极,每灯独立电阻
+JL1,2,GND,绿色LED1阴极,
+JR2,1,3V3,干簧开关一端,不接5V
+JR2,2,RAW2,10k下拉至GND；1k串联至GPIO5,磁铁近时触点闭合
+JL2,1,GPIO9经330Ω,绿色LED2阳极,每灯独立电阻
+JL2,2,GND,绿色LED2阴极,
+JR3,1,3V3,干簧开关一端,不接5V
+JR3,2,RAW3,10k下拉至GND；1k串联至GPIO6,磁铁近时触点闭合
+JL3,1,GPIO10经330Ω,绿色LED3阳极,每灯独立电阻
+JL3,2,GND,绿色LED3阴极,
+JR4,1,3V3,干簧开关一端,不接5V
+JR4,2,RAW4,10k下拉至GND；1k串联至GPIO7,磁铁近时触点闭合
+JL4,1,GPIO11经330Ω,绿色LED4阳极,每灯独立电阻
+JL4,2,GND,绿色LED4阴极,
+JR5,1,3V3,干簧开关一端,不接5V
+JR5,2,RAW5,10k下拉至GND；1k串联至GPIO15,磁铁近时触点闭合
+JL5,1,GPIO12经330Ω,绿色LED5阳极,每灯独立电阻
+JL5,2,GND,绿色LED5阴极,
+JR6,1,3V3,干簧开关一端,不接5V
+JR6,2,RAW6,10k下拉至GND；1k串联至GPIO16,磁铁近时触点闭合
+JL6,1,GPIO13经330Ω,绿色LED6阳极,每灯独立电阻
+JL6,2,GND,绿色LED6阴极,
+JR7,1,3V3,干簧开关一端,不接5V
+JR7,2,RAW7,10k下拉至GND；1k串联至GPIO17,磁铁近时触点闭合
+JL7,1,GPIO14经330Ω,绿色LED7阳极,每灯独立电阻
+JL7,2,GND,绿色LED7阴极,
+JR8,1,3V3,干簧开关一端,不接5V
+JR8,2,RAW8,10k下拉至GND；1k串联至GPIO18,磁铁近时触点闭合
+JL8,1,GPIO21经330Ω,绿色LED8阳极,每灯独立电阻
+JL8,2,GND,绿色LED8阴极,
+JRED,1,GPIO39经330Ω,红LED阳极,
+JRED,2,GND,红LED阴极,
+JOLED,1,3V3,OLED VCC,本包接口定义，不是模块排针顺序
+JOLED,2,GND,OLED GND,按丝印重排线束
+JOLED,3,GPIO41,OLED SDA,
+JOLED,4,GPIO42,OLED SCL,
+JPIEZO,1,3V3,压电片正端,只允许无源压电元件
+JPIEZO,2,Q1 collector,压电片负端,并联1k放电电阻
+Q1,B,GPIO40经2.2k,2N3904基极,B-E间100k
+Q1,E,GND,2N3904发射极,
+Q1,C,JPIEZO.2,2N3904集电极,

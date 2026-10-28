@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="650" viewBox="0 0 1000 650">
+<title>D07 内部布局</title>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="PingFang SC,Noto Sans CJK SC,Arial,sans-serif">
+<text x="30" y="32" font-size="24" fill="#193239" text-anchor="start">D07 / 内部布局 · 元件外形仅作安装包络</text>
+<rect x="55" y="80" width="540" height="460" rx="14" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<rect x="95" y="120" width="460" height="330" rx="5" fill="#D7E1E4" stroke="#607780" stroke-width="2"/>
+<rect x="135" y="160" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="135" y="205" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="135" y="250" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="135" y="295" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="135" y="340" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="135" y="385" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="205" y="160" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="205" y="205" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="205" y="250" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="205" y="295" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="205" y="340" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="205" y="385" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="275" y="160" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="275" y="205" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="275" y="250" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="275" y="295" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="275" y="340" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="275" y="385" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="345" y="160" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="345" y="205" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="345" y="250" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="345" y="295" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="345" y="340" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="345" y="385" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="415" y="160" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="415" y="205" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="415" y="250" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="415" y="295" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="415" y="340" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="415" y="385" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="485" y="160" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="485" y="205" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="485" y="250" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="485" y="295" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="485" y="340" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="485" y="385" width="40" height="7" rx="3" fill="white" stroke="#607780" stroke-width="2"/>
+<rect x="150" y="200" width="150" height="175" rx="4" fill="#A8C8B8" stroke="#607780" stroke-width="2"/>
+<text x="225" y="273" font-size="19" fill="#193239" text-anchor="middle">分配洞洞板</text>
+<text x="225" y="307" font-size="19" fill="#193239" text-anchor="middle">60×70</text>
+<rect x="317" y="195" width="200" height="150" rx="4" fill="#A8C8B8" stroke="#607780" stroke-width="2"/>
+<text x="417" y="224" font-size="17" fill="#193239" text-anchor="middle">控制洞洞板80×60</text>
+<rect x="340" y="245" width="155" height="65" rx="3" fill="#333E45" stroke="#193239" stroke-width="2"/>
+<text x="417" y="285" font-size="18" fill="white" text-anchor="middle">ESP32-S3</text>
+<rect x="482" y="240" width="52" height="75" rx="2" fill="none" stroke="#C55343" stroke-width="2"/>
+<text x="640" y="190" font-size="20" fill="#C55343" text-anchor="start">天线端靠边，附近不布线/放金属</text>
+<line x1="625" y1="198" x2="515" y2="258" stroke="#C55343" stroke-width="2"/>
+<polygon points="515,258 520.2399291681551,250.68268202736016 523.989044278227,257.55605972915873" fill="#C55343" stroke="#C55343"/>
+<circle cx="115" cy="140" r="9" fill="white" stroke="#193239" stroke-width="2"/>
+<circle cx="535" cy="140" r="9" fill="white" stroke="#193239" stroke-width="2"/>
+<circle cx="115" cy="430" r="9" fill="white" stroke="#193239" stroke-width="2"/>
+<circle cx="535" cy="430" r="9" fill="white" stroke="#193239" stroke-width="2"/>
+<text x="640" y="278" font-size="20" fill="#193239" text-anchor="start">载板184×132，槽孔可调固定</text>
+<text x="640" y="321" font-size="20" fill="#193239" text-anchor="start">载板上表面Z=10</text>
+<text x="640" y="364" font-size="20" fill="#193239" text-anchor="start">电子件顶部建议不超过Z=30</text>
+<text x="640" y="407" font-size="20" fill="#193239" text-anchor="start">药杯底Z=35，至少留5mm余量</text>
+<text x="640" y="450" font-size="20" fill="#193239" text-anchor="start">USB线固定后再经过右侧过线孔</text>
+<text x="65" y="592" font-size="21" fill="#137C78" text-anchor="start">示意布局不是PCB铜箔图；孔位按实物使用长槽与绝缘隔离柱适配。</text>
+</g></svg>
