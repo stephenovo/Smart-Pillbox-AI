@@ -1,3 +1,4 @@
+import { legacyUnavailable } from "../../../../src/lib/pilot/api";
 import { NextResponse } from "next/server";
 
 import { getInterventionExecutionMode } from "../../../../src/lib/interventionRuntime";
@@ -15,11 +16,13 @@ function unavailable() {
       error:
         "Adherence intervention inspection is only available in local development.",
     },
-    { status: 404 }
+    { status: 404 },
   );
 }
 
 export async function GET(request: Request) {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   if (process.env.NODE_ENV !== "development") return unavailable();
   const searchParams = new URL(request.url).searchParams;
   const patientId = searchParams.get("patientId")?.trim();
@@ -42,6 +45,8 @@ export async function GET(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   if (process.env.NODE_ENV !== "development") return unavailable();
   const patientId = new URL(request.url).searchParams.get("patientId")?.trim();
   clearInterventionDecisions(patientId || undefined);

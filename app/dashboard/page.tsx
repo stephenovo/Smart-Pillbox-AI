@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { Bell } from "lucide-react";
 
 import AppModeSwitcher from "../../src/components/AppModeSwitcher";
@@ -46,11 +52,11 @@ import type {
 
 function mergeOpeningEvents(
   currentEvents: OpeningEvent[],
-  incomingEvents: OpeningEvent[]
+  incomingEvents: OpeningEvent[],
 ): OpeningEvent[] {
   const currentEventIds = new Set(currentEvents.map((event) => event.id));
   const newEvents = incomingEvents.filter(
-    (event) => !currentEventIds.has(event.id)
+    (event) => !currentEventIds.has(event.id),
   );
 
   if (newEvents.length === 0) {
@@ -74,7 +80,7 @@ function todayDateString(): string {
  */
 function createSyncedDeviceHistory(
   schedule: MedicationSchedule[],
-  date: string
+  date: string,
 ): OpeningEvent[] {
   const specs = [
     { id: "device-history-c3", compartmentId: 3, openedAt: `${date} 13:40` },
@@ -86,7 +92,7 @@ function createSyncedDeviceHistory(
   return specs
     .map((spec): OpeningEvent | null => {
       const scheduleItem = schedule.find(
-        (item) => item.compartment === spec.compartmentId
+        (item) => item.compartment === spec.compartmentId,
       );
 
       if (!scheduleItem) {
@@ -96,7 +102,9 @@ function createSyncedDeviceHistory(
       return {
         id: spec.id,
         eventTime: spec.openedAt,
-        receivedAt: new Date(spec.openedAt.replace(" ", "T") + ":00").toISOString(),
+        receivedAt: new Date(
+          spec.openedAt.replace(" ", "T") + ":00",
+        ).toISOString(),
         compartment: scheduleItem.compartment,
         medication: scheduleItem.medication,
         eventType: "lid_open",
@@ -115,38 +123,55 @@ function greetingForTime(time: string): string {
   return "Good evening";
 }
 
+function readStoredMode(): AppMode {
+  try {
+    const value = window.localStorage.getItem(APP_MODE_STORAGE_KEY);
+    return isAppMode(value) ? value : "circle-care";
+  } catch {
+    return "circle-care";
+  }
+}
+function subscribeMode(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener("pillbox-mode-change", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("pillbox-mode-change", callback);
+  };
+}
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<MainSectionTab>("dashboard");
-  const [appMode, setAppMode] = useState<AppMode>("circle-care");
-  const [userProfile, setUserProfile] = useState<UserProfile>(
-    DEFAULT_USER_PROFILE
+  const appMode = useSyncExternalStore(
+    subscribeMode,
+    readStoredMode,
+    () => "circle-care" as AppMode,
   );
+  const [userProfile, setUserProfile] =
+    useState<UserProfile>(DEFAULT_USER_PROFILE);
 
-  const [medicationSchedule, setMedicationSchedule] =
-    useState<MedicationSchedule[]>(initialMedicationSchedule);
+  const [medicationSchedule, setMedicationSchedule] = useState<
+    MedicationSchedule[]
+  >(initialMedicationSchedule);
 
   const [openingEvents, setOpeningEvents] = useState<OpeningEvent[]>(() =>
-    createSyncedDeviceHistory(initialMedicationSchedule, todayDateString())
+    createSyncedDeviceHistory(initialMedicationSchedule, todayDateString()),
   );
 
   const [analysisDate, setAnalysisDate] = useState(() => todayDateString());
   const [analysisTime, setAnalysisTime] = useState("21:05");
   const [deviceState, setDeviceState] = useState<HardwareDeviceState | null>(
-    null
+    null,
   );
   const latestHardwareEventId = useRef<string | null>(null);
 
   useEffect(() => {
-    const storedMode = window.localStorage.getItem(APP_MODE_STORAGE_KEY);
-    if (isAppMode(storedMode)) {
-      setAppMode(storedMode);
-      document.documentElement.dataset.careMode = storedMode;
-    }
-  }, []);
+    document.documentElement.dataset.careMode = appMode;
+  }, [appMode]);
 
   function handleModeChange(nextMode: AppMode) {
-    setAppMode(nextMode);
     window.localStorage.setItem(APP_MODE_STORAGE_KEY, nextMode);
+    window.dispatchEvent(new Event("pillbox-mode-change"));
     document.documentElement.dataset.careMode = nextMode;
     if (nextMode === "my-care" && activeTab === "messages") {
       setActiveTab("dashboard");
@@ -186,7 +211,7 @@ export default function Home() {
           fetch("/api/hardware/events", { cache: "no-store" }),
           fetch(
             `/api/hardware/state?deviceId=${encodeURIComponent(DEMO_DEVICE_ID)}`,
-            { cache: "no-store" }
+            { cache: "no-store" },
           ),
         ]);
 
@@ -195,9 +220,10 @@ export default function Home() {
         }
 
         if (eventsResponse.ok) {
-          const data = (await eventsResponse.json()) as HardwareEventsApiResponse;
+          const data =
+            (await eventsResponse.json()) as HardwareEventsApiResponse;
           setOpeningEvents((currentEvents) =>
-            mergeOpeningEvents(currentEvents, data.events)
+            mergeOpeningEvents(currentEvents, data.events),
           );
 
           const latestEvent = data.events[0];
@@ -227,7 +253,7 @@ export default function Home() {
 
   const activeMedicationSchedule = useMemo(
     () => medicationSchedule.filter((item) => item.medication.trim() !== ""),
-    [medicationSchedule]
+    [medicationSchedule],
   );
 
   const medicationStatuses = useMemo(
@@ -235,9 +261,9 @@ export default function Home() {
       generateRecordedMedicationStatuses(
         activeMedicationSchedule,
         openingEvents,
-        analysisDate
+        analysisDate,
       ),
-    [activeMedicationSchedule, openingEvents, analysisDate]
+    [activeMedicationSchedule, openingEvents, analysisDate],
   );
 
   async function handleScheduleChange(nextSchedule: MedicationSchedule[]) {
@@ -257,7 +283,9 @@ export default function Home() {
     });
 
     if (!response.ok) {
-      throw new Error("The medication plan could not be sent to the device API.");
+      throw new Error(
+        "The medication plan could not be sent to the device API.",
+      );
     }
 
     setMedicationSchedule(nextSchedule);
@@ -272,7 +300,9 @@ export default function Home() {
   }
 
   return (
-    <main className={`min-h-screen bg-cream text-ink ${appMode === "my-care" ? "my-care-mode" : ""}`}>
+    <main
+      className={`min-h-screen bg-cream text-ink ${appMode === "my-care" ? "my-care-mode" : ""}`}
+    >
       <div className="flex min-h-screen">
         <Sidebar
           activeTab={activeTab}
@@ -286,7 +316,8 @@ export default function Home() {
             <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-line bg-surface/95 px-4 backdrop-blur sm:px-7 lg:h-20 lg:px-10">
               <div>
                 <h1 className="text-lg font-bold text-ink lg:text-xl">
-                  {greetingForTime(analysisTime)}, {profileFirstName(userProfile)}
+                  {greetingForTime(analysisTime)},{" "}
+                  {profileFirstName(userProfile)}
                 </h1>
                 <p className="mt-0.5 text-xs text-ink-soft lg:text-sm">
                   {appMode === "my-care"
@@ -372,7 +403,9 @@ export default function Home() {
                       statuses={medicationStatuses}
                       analysisTime={analysisTime}
                       onScheduleChange={handleScheduleChange}
-                      onApplyRecommendedBufferTimes={handleApplyRecommendedBufferTimes}
+                      onApplyRecommendedBufferTimes={
+                        handleApplyRecommendedBufferTimes
+                      }
                     />
                   )}
 

@@ -1,3 +1,5 @@
+import { appMode } from "../../../../src/lib/pilot/api";
+import { pilotRoute } from "../../../../src/lib/pilot/runtime";
 import { NextResponse } from "next/server";
 
 import {
@@ -36,6 +38,7 @@ function jsonResponse(body: unknown, init?: ResponseInit) {
 }
 
 export async function GET(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "events");
   const { searchParams } = new URL(request.url);
   const deviceId = searchParams.get("deviceId")?.trim() || DEMO_DEVICE_ID;
   const requestedLimit = Number(searchParams.get("limit") ?? 50);
@@ -54,12 +57,16 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "events");
   let body: unknown;
 
   try {
     body = await request.json();
   } catch {
-    return jsonResponse({ error: "Request body must be valid JSON." }, { status: 400 });
+    return jsonResponse(
+      { error: "Request body must be valid JSON." },
+      { status: 400 },
+    );
   }
 
   const result = validateHardwareEventPayload(body);
@@ -70,8 +77,10 @@ export async function POST(request: Request) {
 
   if (!isHardwareDemoSlot(result.payload.slotId)) {
     return jsonResponse(
-      { error: "This hardware demo only accepts events from Slot 1 and Slot 2." },
-      { status: 400 }
+      {
+        error: "This hardware demo only accepts events from Slot 1 and Slot 2.",
+      },
+      { status: 400 },
     );
   }
 
@@ -99,6 +108,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "events");
   const { searchParams } = new URL(request.url);
   const deviceId = searchParams.get("deviceId")?.trim() || DEMO_DEVICE_ID;
   await clearCloudHardwareEvents(deviceId);

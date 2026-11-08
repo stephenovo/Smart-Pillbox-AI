@@ -290,3 +290,18 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 <div align="center">
   <strong>讓重要的用藥時刻被看見，也不讓照護變得複雜。</strong>
 </div>
+
+## Protected family pilot / 家庭照护试点
+
+A separate `/pilot` workflow now provides caregiver sessions, family/device authorization, D1 event and plan history, retry-safe ingestion, deterministic scheduling and shared follow-up tasks. Existing deployments continue in demo mode by default. Set `PILLBOX_MODE=pilot` only after provisioning the protected D1 pilot and its private credentials. Configure and rehearse the pilot before collecting real data.
+
+- [Local setup, deployment and recovery](docs/pilot/OPERATIONS.md)
+- [Acceptance checks and remaining work](docs/pilot/ACCEPTANCE.md)
+- [技术负责人学习清单（中文）](docs/TECH_LEAD_LEARNING.zh-CN.md)
+
+```sh
+npm run check
+npm run pilot:credentials
+npm run pilot:migrate:local
+npm run pilot:dev -- --hostname 127.0.0.1 --port 3218
+```

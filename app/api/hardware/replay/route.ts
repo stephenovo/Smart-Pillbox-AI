@@ -1,3 +1,4 @@
+import { legacyUnavailable } from "../../../../src/lib/pilot/api";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
@@ -67,9 +68,13 @@ const bundlePath = join(
   ".data",
   "ml",
   "replay",
-  "demo_bundle.json"
+  "demo_bundle.json",
 );
-const sessionPath = join(process.cwd(), ".data", "hardware-replay-session.json");
+const sessionPath = join(
+  process.cwd(),
+  ".data",
+  "hardware-replay-session.json",
+);
 
 function isDevelopment(): boolean {
   return process.env.NODE_ENV === "development";
@@ -98,7 +103,9 @@ function readBundle(): ReplayBundle | null {
 
 function readSession(): HardwareReplaySession | null {
   try {
-    return JSON.parse(readFileSync(sessionPath, "utf8")) as HardwareReplaySession;
+    return JSON.parse(
+      readFileSync(sessionPath, "utf8"),
+    ) as HardwareReplaySession;
   } catch {
     return null;
   }
@@ -115,7 +122,7 @@ function doseIdFromReplayEvent(event: ReplayEvent): string {
 
 function toOpeningEvent(
   event: ReplayEvent,
-  plan: HardwarePlanSlot[]
+  plan: HardwarePlanSlot[],
 ): OpeningEvent | null {
   const validated = validateHardwareEventPayload({
     deviceId: DEMO_DEVICE_ID,
@@ -139,11 +146,13 @@ function unavailableResponse(): NextResponse<HardwareReplayApiResponse> {
       session: null,
       error: "Hardware replay is only available in local development.",
     },
-    { status: 404 }
+    { status: 404 },
   );
 }
 
 export async function GET() {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   if (!isDevelopment()) return unavailableResponse();
 
   return NextResponse.json<HardwareReplayApiResponse>({
@@ -154,6 +163,8 @@ export async function GET() {
 }
 
 export async function POST() {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   if (!isDevelopment()) return unavailableResponse();
 
   const bundle = readBundle();
@@ -163,9 +174,10 @@ export async function POST() {
         available: true,
         bundleReady: false,
         session: null,
-        error: "Replay bundle is missing or invalid. Run ml/replay_hardware_events.py first.",
+        error:
+          "Replay bundle is missing or invalid. Run ml/replay_hardware_events.py first.",
       },
-      { status: 409 }
+      { status: 409 },
     );
   }
 
@@ -186,19 +198,20 @@ export async function POST() {
   const decisions = [];
   try {
     for (const source of [...bundle.shadow_decisions].sort((left, right) =>
-      left.scheduled_at.localeCompare(right.scheduled_at)
+      left.scheduled_at.localeCompare(right.scheduled_at),
     )) {
       const slot = bundle.plan.find(
-        (item) => item.slotId === source.compartment_id
+        (item) => item.slotId === source.compartment_id,
       );
       if (!slot) continue;
       const doseEvents = (eventsByDose.get(source.dose_id) ?? []).sort(
-        (left, right) => left.receivedAt.localeCompare(right.receivedAt)
+        (left, right) => left.receivedAt.localeCompare(right.receivedAt),
       );
       const bufferDeadline =
-        new Date(source.scheduled_at).getTime() + slot.bufferTimeMinutes * 60_000;
+        new Date(source.scheduled_at).getTime() +
+        slot.bufferTimeMinutes * 60_000;
       const observedByBuffer = doseEvents.some(
-        (event) => new Date(event.receivedAt).getTime() <= bufferDeadline
+        (event) => new Date(event.receivedAt).getTime() <= bufferDeadline,
       );
       const decision = await scoreShadowDose({
         patientId: bundle.source_patient_id,
@@ -246,7 +259,7 @@ export async function POST() {
             ? `Live shadow model unavailable: ${error.message}`
             : "Live shadow model unavailable.",
       },
-      { status: 503 }
+      { status: 503 },
     );
   }
   const riskValues = decisions.map((decision) => decision.riskProbability);
@@ -261,13 +274,13 @@ export async function POST() {
     metrics: {
       doseCount: decisions.length,
       adaptiveCandidateCount: decisions.filter(
-        (decision) => decision.adaptiveCandidate
+        (decision) => decision.adaptiveCandidate,
       ).length,
       adaptiveAllowedCount: decisions.filter(
-        (decision) => decision.adaptiveAllowedAfterBudget
+        (decision) => decision.adaptiveAllowedAfterBudget,
       ).length,
       safetyControlCount: decisions.filter(
-        (decision) => decision.safetyControlEvaluation
+        (decision) => decision.safetyControlEvaluation,
       ).length,
       averageRiskProbability:
         riskValues.reduce((total, value) => total + value, 0) /

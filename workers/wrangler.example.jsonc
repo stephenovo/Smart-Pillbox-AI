@@ -1,0 +1,8 @@
+{
+  "name":"pillbox-pilot-scheduler",
+  "main":"pilot-scheduler.ts",
+  "compatibility_date":"2026-08-05",
+  "triggers":{"crons":["* * * * *"]},
+  "vars":{"PILOT_ORIGIN":"https://YOUR-PILOT-HOST"},
+  "observability":{"enabled":true}
+}

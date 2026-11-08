@@ -1,3 +1,4 @@
+import { legacyUnavailable } from "../../../../src/lib/pilot/api";
 import { NextResponse } from "next/server";
 
 import { runAdherenceLifecycleTick } from "../../../../src/lib/adherenceLifecycle";
@@ -26,8 +27,11 @@ type TickRequest = {
 
 function unavailable() {
   return NextResponse.json(
-    { error: "Adherence lifecycle tools are only available in local development." },
-    { status: 404 }
+    {
+      error:
+        "Adherence lifecycle tools are only available in local development.",
+    },
+    { status: 404 },
   );
 }
 
@@ -35,7 +39,7 @@ function boundedNumber(
   value: unknown,
   fallback: number,
   minimum: number,
-  maximum: number
+  maximum: number,
 ): number | null {
   if (value === undefined) return fallback;
   if (typeof value !== "number" || !Number.isFinite(value)) return null;
@@ -44,6 +48,8 @@ function boundedNumber(
 }
 
 export async function GET(request: Request) {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   if (process.env.NODE_ENV !== "development") return unavailable();
   const searchParams = new URL(request.url).searchParams;
   const patientId = searchParams.get("patientId")?.trim();
@@ -58,11 +64,14 @@ export async function GET(request: Request) {
     records,
     count: records.length,
     totalCount: allRecords.length,
-    warning: "Opening-event labels are behavioural proxies, not proof of ingestion.",
+    warning:
+      "Opening-event labels are behavioural proxies, not proof of ingestion.",
   });
 }
 
 export async function POST(request: Request) {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   if (process.env.NODE_ENV !== "development") return unavailable();
   let rawBody: unknown;
   try {
@@ -70,13 +79,13 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { error: "Request body must be valid JSON." },
-      { status: 400 }
+      { status: 400 },
     );
   }
   if (!rawBody || typeof rawBody !== "object" || Array.isArray(rawBody)) {
     return NextResponse.json(
       { error: "Request body must be a JSON object." },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const body = rawBody as TickRequest;
@@ -85,7 +94,7 @@ export async function POST(request: Request) {
   if (deviceId.length > 64 || patientId.length > 128) {
     return NextResponse.json(
       { error: "deviceId or patientId is too long." },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const now = body.now ? new Date(body.now) : new Date();
@@ -93,13 +102,13 @@ export async function POST(request: Request) {
     body.scoringHorizonMinutes,
     30,
     1,
-    1_440
+    1_440,
   );
   const outcomeMaturityHours = boundedNumber(
     body.outcomeMaturityHours,
     24,
     1,
-    72
+    72,
   );
   const backfillDays = boundedNumber(body.backfillDays, 7, 0, 30);
   if (
@@ -110,7 +119,7 @@ export async function POST(request: Request) {
   ) {
     return NextResponse.json(
       { error: "Invalid tick time or lifecycle limits." },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const summary = await runAdherenceLifecycleTick({
@@ -131,6 +140,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   if (process.env.NODE_ENV !== "development") return unavailable();
   const patientId = new URL(request.url).searchParams.get("patientId")?.trim();
   clearDoseLifecycles(patientId || undefined);

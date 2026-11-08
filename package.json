@@ -10,7 +10,13 @@
     "lint": "eslint",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "test": "node scripts/test.mjs",
+    "typecheck": "next typegen && tsc --noEmit",
+    "check": "npm run lint && npm run test && npm run typecheck",
+    "pilot:credentials": "node scripts/pilot-credentials.mjs",
+    "pilot:dev": "node scripts/pilot-dev.mjs",
+    "pilot:migrate:local": "wrangler d1 migrations apply PILOT_DB --local --config wrangler.pilot.local.jsonc"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
@@ -29,5 +35,8 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "4.118.0"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   }
 }
