@@ -334,3 +334,18 @@ to the internal testing group.
 <div align="center">
   <strong>Keep the important medicine moments visible, without making care feel complicated.</strong>
 </div>
+
+## Protected family pilot / 家庭照护试点
+
+A separate `/pilot` workflow now provides caregiver sessions, family/device authorization, D1 event and plan history, retry-safe ingestion, deterministic scheduling and shared follow-up tasks. Production defaults to protected mode; the existing showcase requires explicit `PILLBOX_MODE=demo`. Configure and rehearse the pilot before collecting real data.
+
+- [Local setup, deployment and recovery](docs/pilot/OPERATIONS.md)
+- [Acceptance checks and remaining work](docs/pilot/ACCEPTANCE.md)
+- [技术负责人学习清单（中文）](docs/TECH_LEAD_LEARNING.zh-CN.md)
+
+```sh
+npm run check
+npm run pilot:credentials
+npm run pilot:migrate:local
+npm run pilot:dev -- --hostname 127.0.0.1 --port 3218
+```

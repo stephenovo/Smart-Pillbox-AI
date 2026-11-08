@@ -1,0 +1,10 @@
+{
+  "name":"pillbox-pilot",
+  "main":".open-next/worker.js",
+  "compatibility_date":"2026-08-05",
+  "compatibility_flags":["nodejs_compat"],
+  "assets":{"directory":".open-next/assets","binding":"ASSETS"},
+  "vars":{"PILLBOX_MODE":"pilot"},
+  "d1_databases":[{"binding":"PILOT_DB","database_name":"pillbox-pilot","database_id":"REPLACE_WITH_CREATED_DATABASE_ID","migrations_dir":"migrations"}],
+  "observability":{"enabled":true}
+}

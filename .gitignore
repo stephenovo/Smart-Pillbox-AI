@@ -71,3 +71,8 @@ xcuserdata/
 # local duplicate backups
 /README 2.md
 /app/page 2.tsx
+
+# Pilot local secrets and generated test output
+/.pilot-secrets/
+/.test-build/
+/wrangler.pilot.local.jsonc

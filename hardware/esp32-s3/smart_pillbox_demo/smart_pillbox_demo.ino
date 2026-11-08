@@ -1,3 +1,4 @@
+#include <time.h>
 /*
   Smart Pillbox AI - ESP32-S3 hardware MVP
 
@@ -61,6 +62,8 @@ struct QueuedEvent {
   uint8_t attempts;
   unsigned long nextAttemptAt;
   bool correctSlot;
+  String eventId;
+  String observedAt;
 };
 
 bool rawOpenState[SLOT_COUNT];
@@ -203,7 +206,20 @@ bool enqueueEvent(uint8_t slotId, const String& eventType, bool correctSlot) {
     return false;
   }
 
-  eventQueue[queueTail] = {slotId, eventType, 0, 0, correctSlot};
+  char eventId[40];
+  snprintf(eventId, sizeof(eventId), "%08lx%08lx%08lx%08lx",
+           (unsigned long)esp_random(), (unsigned long)esp_random(),
+           (unsigned long)esp_random(), (unsigned long)esp_random());
+  String observedAt = "";
+  time_t utcNow = time(nullptr);
+  if (utcNow > 1700000000) {
+    struct tm utc;
+    gmtime_r(&utcNow, &utc);
+    char timestamp[25];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", &utc);
+    observedAt = timestamp;
+  }
+  eventQueue[queueTail] = {slotId, eventType, 0, 0, correctSlot, String(eventId), observedAt};
   queueTail = (queueTail + 1) % EVENT_QUEUE_SIZE;
   queueCount++;
 
@@ -227,6 +243,8 @@ bool uploadEvent(const QueuedEvent& queuedEvent) {
 
   JsonDocument document;
   document["deviceId"] = DEVICE_ID;
+  document["eventId"] = queuedEvent.eventId;
+  if (queuedEvent.observedAt.length() > 0) document["deviceTimestamp"] = queuedEvent.observedAt;
   document["slotId"] = queuedEvent.slotId;
   document["eventType"] = queuedEvent.eventType;
   document["firmwareVersion"] = FIRMWARE_VERSION;
@@ -449,6 +467,7 @@ void setBuzzer(bool enabled) {
 }
 
 void setup() {
+  configTime(0, 0, "pool.ntp.org", "time.google.com");
   Serial.begin(115200);
   const unsigned long serialStartAt = millis();
   while (!Serial && millis() - serialStartAt < 4000) {

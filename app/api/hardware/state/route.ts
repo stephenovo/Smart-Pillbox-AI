@@ -1,3 +1,5 @@
+import { appMode } from "../../../../src/lib/pilot/api";
+import { pilotRoute } from "../../../../src/lib/pilot/runtime";
 import { NextResponse } from "next/server";
 
 import {
@@ -35,6 +37,7 @@ function jsonResponse(body: unknown, init?: ResponseInit) {
 }
 
 export async function GET(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "state");
   const { searchParams } = new URL(request.url);
   const deviceId = searchParams.get("deviceId")?.trim() || DEMO_DEVICE_ID;
   const isDeviceHeartbeat = searchParams.get("heartbeat") === "1";
@@ -57,12 +60,16 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "state");
   let body: unknown;
 
   try {
     body = await request.json();
   } catch {
-    return jsonResponse({ error: "Request body must be valid JSON." }, { status: 400 });
+    return jsonResponse(
+      { error: "Request body must be valid JSON." },
+      { status: 400 },
+    );
   }
 
   const result = validateHardwareStateMutation(body);
@@ -76,14 +83,14 @@ export async function POST(request: Request) {
   ) {
     return jsonResponse(
       { error: "This hardware demo only supports Slot 1 and Slot 2." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const state = await setCloudHardwareState(
     result.payload.deviceId,
     result.payload.status,
-    result.payload.activeSlot ?? null
+    result.payload.activeSlot ?? null,
   );
   return jsonResponse(state);
 }

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "../.test-build",
+    "rootDir": "..",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": ["ES2023", "DOM"],
+    "types": ["node"]
+  },
+  "include": [
+    "../src/lib/pilot/auth.ts",
+    "../src/lib/pilot/api.ts",
+    "../src/lib/pilot/store.ts",
+    "../src/lib/pilot/scheduler.ts"
+  ]
+}

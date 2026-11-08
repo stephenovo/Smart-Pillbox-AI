@@ -1,3 +1,4 @@
+import { legacyUnavailable } from "../../../src/lib/pilot/api";
 import { NextResponse } from "next/server";
 import {
   buildCaregiverInsightApiPrompt,
@@ -18,20 +19,21 @@ type DeepSeekChatCompletionResponse = {
 };
 
 type AiReportSection =
-  | "caregiver_summary"
-  | "key_insight"
-  | "clinic_visit_note";
+  "caregiver_summary" | "key_insight" | "clinic_visit_note";
 
 function createInsightReport(patientId: string): CaregiverInsightReport {
   return generateCaregiverInsightReport(
     patientId === "margaret" ? sampleHistoricalAdherenceRecords : [],
-    patientId
+    patientId,
   );
 }
 
 function safePatientName(value: unknown): string {
   if (typeof value !== "string") return "Margaret";
-  const name = value.replace(/[^\p{L}\p{M}' -]/gu, "").trim().slice(0, 60);
+  const name = value
+    .replace(/[^\p{L}\p{M}' -]/gu, "")
+    .trim()
+    .slice(0, 60);
   return name || "the person you care for";
 }
 
@@ -44,6 +46,8 @@ function isAiReportSection(value: unknown): value is AiReportSection {
 }
 
 export async function GET(request: Request) {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   const { searchParams } = new URL(request.url);
   const patientId = searchParams.get("patientId")?.trim() || "margaret";
   return NextResponse.json({ report: createInsightReport(patientId) });
@@ -75,6 +79,8 @@ Include observations only. Do not give medical advice, make recommendations, or 
 }
 
 export async function POST(request: Request) {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   try {
     const apiKey = process.env.DEEPSEEK_API_KEY;
     const model = process.env.DEEPSEEK_MODEL ?? "deepseek-v4-flash";
@@ -85,7 +91,7 @@ export async function POST(request: Request) {
           error:
             "Missing DEEPSEEK_API_KEY. Please add it to .env.local and restart the development server.",
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -166,7 +172,7 @@ Keep the tone warm, calm, and human — like a note from someone who knows the f
           temperature: 0.3,
           stream: false,
         }),
-      }
+      },
     );
 
     const data =
@@ -179,7 +185,7 @@ Keep the tone warm, calm, and human — like a note from someone who knows the f
             data.error?.message ??
             "DeepSeek API request failed. Please check your API key, model name, or account balance.",
         },
-        { status: deepSeekResponse.status }
+        { status: deepSeekResponse.status },
       );
     }
 
@@ -202,7 +208,7 @@ Keep the tone warm, calm, and human — like a note from someone who knows the f
       {
         error: message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

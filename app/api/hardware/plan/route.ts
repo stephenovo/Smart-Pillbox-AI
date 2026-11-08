@@ -1,3 +1,5 @@
+import { appMode } from "../../../../src/lib/pilot/api";
+import { pilotRoute } from "../../../../src/lib/pilot/runtime";
 import { NextResponse } from "next/server";
 
 import {
@@ -29,6 +31,7 @@ function jsonResponse(body: unknown, init?: ResponseInit) {
 }
 
 export async function GET(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "plan");
   const { searchParams } = new URL(request.url);
   const deviceId = searchParams.get("deviceId")?.trim() || DEMO_DEVICE_ID;
   const response: HardwarePlanApiResponse = {
@@ -41,12 +44,16 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "plan");
   let body: unknown;
 
   try {
     body = await request.json();
   } catch {
-    return jsonResponse({ error: "Request body must be valid JSON." }, { status: 400 });
+    return jsonResponse(
+      { error: "Request body must be valid JSON." },
+      { status: 400 },
+    );
   }
 
   const result = validateHardwarePlanPayload(body);
@@ -56,7 +63,7 @@ export async function POST(request: Request) {
 
   const slots = await setCloudHardwarePlan(
     result.payload.deviceId,
-    result.payload.slots
+    result.payload.slots,
   );
   return jsonResponse({
     deviceId: result.payload.deviceId,

@@ -1,3 +1,4 @@
+import { legacyUnavailable } from "../../../src/lib/pilot/api";
 import { NextResponse } from "next/server";
 
 import {
@@ -24,11 +25,15 @@ function jsonResponse(body: unknown, init?: ResponseInit) {
 }
 
 export async function GET() {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   const response: UserProfileApiResponse = { profile: getUserProfile() };
   return jsonResponse(response);
 }
 
 export async function PUT(request: Request) {
+  const blockedDemo = legacyUnavailable();
+  if (blockedDemo) return blockedDemo;
   let body: unknown;
 
   try {
@@ -36,7 +41,7 @@ export async function PUT(request: Request) {
   } catch {
     return jsonResponse(
       { error: "Request body must be valid JSON." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

@@ -1,3 +1,5 @@
+import { appMode } from "../../../../src/lib/pilot/api";
+import { pilotRoute } from "../../../../src/lib/pilot/runtime";
 import { NextResponse } from "next/server";
 
 import {
@@ -25,13 +27,15 @@ function jsonResponse(body: unknown, init?: ResponseInit) {
 function finiteNumber(
   value: unknown,
   minimum: number,
-  maximum: number
+  maximum: number,
 ): number | null {
   if (typeof value !== "number" || !Number.isFinite(value)) return null;
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-function validateTelemetry(body: unknown):
+function validateTelemetry(
+  body: unknown,
+):
   | { ok: true; payload: HardwareTelemetryPayload }
   | { ok: false; error: string } {
   if (!body || typeof body !== "object") {
@@ -52,7 +56,7 @@ function validateTelemetry(body: unknown):
   const freeHeapBytes = finiteNumber(
     candidate.freeHeapBytes,
     0,
-    Number.MAX_SAFE_INTEGER
+    Number.MAX_SAFE_INTEGER,
   );
   const uploadQueueDepth = finiteNumber(candidate.uploadQueueDepth, 0, 1000);
   const reminderActive = candidate.reminderActive;
@@ -83,7 +87,10 @@ function validateTelemetry(body: unknown):
       activeSlot < 1 ||
       activeSlot > 8)
   ) {
-    return { ok: false, error: "activeSlot must be null or a slot from 1 to 8." };
+    return {
+      ok: false,
+      error: "activeSlot must be null or a slot from 1 to 8.",
+    };
   }
 
   return {
@@ -107,6 +114,7 @@ function validateTelemetry(body: unknown):
 }
 
 export async function GET(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "telemetry");
   const { searchParams } = new URL(request.url);
   const deviceId = searchParams.get("deviceId")?.trim() || DEMO_DEVICE_ID;
 
@@ -118,11 +126,15 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (appMode() !== "demo") return pilotRoute(request, "telemetry");
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return jsonResponse({ error: "Request body must be valid JSON." }, { status: 400 });
+    return jsonResponse(
+      { error: "Request body must be valid JSON." },
+      { status: 400 },
+    );
   }
 
   const result = validateTelemetry(body);
