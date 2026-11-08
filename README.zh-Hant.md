@@ -293,7 +293,7 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 
 ## Protected family pilot / 家庭照护试点
 
-A separate `/pilot` workflow now provides caregiver sessions, family/device authorization, D1 event and plan history, retry-safe ingestion, deterministic scheduling and shared follow-up tasks. Production defaults to protected mode; the existing showcase requires explicit `PILLBOX_MODE=demo`. Configure and rehearse the pilot before collecting real data.
+A separate `/pilot` workflow now provides caregiver sessions, family/device authorization, D1 event and plan history, retry-safe ingestion, deterministic scheduling and shared follow-up tasks. Existing deployments continue in demo mode by default. Set `PILLBOX_MODE=pilot` only after provisioning the protected D1 pilot and its private credentials. Configure and rehearse the pilot before collecting real data.
 
 - [Local setup, deployment and recovery](docs/pilot/OPERATIONS.md)
 - [Acceptance checks and remaining work](docs/pilot/ACCEPTANCE.md)

@@ -24,7 +24,7 @@ node scripts/pilot-smoke.mjs
 
 The smoke script accepts localhost only and creates clearly labelled local test records. It verifies real local D1, API login, cross-family isolation, versioned plans, event deduplication and the task lifecycle.
 
-To use the old synthetic demo locally, run `PILLBOX_MODE=demo npm run dev`. Production defaults to protected pilot mode. An unknown mode fails closed. A public synthetic demonstration must explicitly set `PILLBOX_MODE=demo` and must not contain real patient data. Do not deploy this branch over an existing demo until its mode is configured.
+Existing deployments continue in demo mode when `PILLBOX_MODE` is unset, including production. An unknown mode fails closed. Set `PILLBOX_MODE=pilot` only after provisioning a separate D1 binding and private credentials. A public synthetic demonstration must not contain real patient data. Do not collect real pilot data through demo routes.
 
 ## Runtime contract
 

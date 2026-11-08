@@ -28,9 +28,9 @@ export type PilotEnvironment = {
   PILOT_SCHEDULER_SECRET?: string;
 };
 export function appMode(): "demo" | "pilot" | "invalid" {
-  const value =
-    process.env.PILLBOX_MODE ??
-    (process.env.NODE_ENV === "production" ? "pilot" : "demo");
+  // Existing public deployments keep their demo routes until pilot is
+  // explicitly provisioned with D1, member credentials and device keys.
+  const value = process.env.PILLBOX_MODE ?? "demo";
   return value === "demo" || value === "pilot" ? value : "invalid";
 }
 export function legacyUnavailable(): Response | null {

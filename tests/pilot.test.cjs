@@ -4,6 +4,7 @@ const { database } = require("./sqlite.cjs");
 const {
   handlePilot,
   legacyUnavailable,
+  appMode,
 } = require("../.test-build/src/lib/pilot/api.js");
 const {
   hashToken,
@@ -782,4 +783,23 @@ test("an active reminder prevents a plan edit from orphaning its command", async
     (await f.store.plan(registry.devices[0])).version,
     saved.body.version,
   );
+});
+
+test("unconfigured production keeps existing demo routes until pilot is explicitly enabled", () => {
+  const previousMode = process.env.PILLBOX_MODE;
+  const previousNodeEnv = process.env.NODE_ENV;
+  try {
+    delete process.env.PILLBOX_MODE;
+    process.env.NODE_ENV = "production";
+    assert.equal(appMode(), "demo");
+    assert.equal(legacyUnavailable(), null);
+    process.env.PILLBOX_MODE = "pilot";
+    assert.equal(appMode(), "pilot");
+    assert.equal(legacyUnavailable().status, 404);
+  } finally {
+    if (previousMode === undefined) delete process.env.PILLBOX_MODE;
+    else process.env.PILLBOX_MODE = previousMode;
+    if (previousNodeEnv === undefined) delete process.env.NODE_ENV;
+    else process.env.NODE_ENV = previousNodeEnv;
+  }
 });

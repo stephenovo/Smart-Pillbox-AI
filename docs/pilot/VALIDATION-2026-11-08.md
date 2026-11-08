@@ -2,7 +2,7 @@
 
 Implemented and checked in a separate `codex/pilot-foundation-20261108` worktree based on main commit `b5f7f2d`. Existing uncommitted work in the original project directory was not incorporated or overwritten.
 
-- `npm run check`: ESLint, 28 regression tests and Next/TypeScript checking passed.
+- `npm run check`: ESLint, 29 regression tests and Next/TypeScript checking passed.
 - `npm run build -- --webpack`: production build passed. Figtree is now shipped locally with its OFL license, removing build-time Google Fonts downloads.
 - Local Cloudflare D1 migration applied successfully. `node scripts/pilot-smoke.mjs` passed against the running Next application and actual Wrangler D1 binding.
 - Chrome browser workflow passed at desktop and 390px mobile widths: login, task creation, claim, resolution and logout; no page JavaScript errors and no document-level horizontal overflow. An unsaved plan draft survived task operations and could be explicitly discarded/reloaded.
