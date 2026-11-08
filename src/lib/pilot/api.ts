@@ -360,6 +360,7 @@ export async function handlePilot(
             valid.payload.status,
             valid.payload.activeSlot ?? null,
             now,
+            valid.payload.reminderStage ?? "first",
           ),
         );
       }

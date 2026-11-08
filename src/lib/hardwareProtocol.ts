@@ -221,12 +221,28 @@ export function validateHardwareStateMutation(
     };
   }
 
+  if (
+    payload.status === "reminding" &&
+    payload.reminderStage !== undefined &&
+    payload.reminderStage !== "first" &&
+    payload.reminderStage !== "second"
+  ) {
+    return {
+      ok: false,
+      error: "reminderStage must be first or second while reminding.",
+    };
+  }
+
   return {
     ok: true,
     payload: {
       deviceId: payload.deviceId.trim(),
       status: payload.status,
       activeSlot: payload.status === "reminding" ? payload.activeSlot : null,
+      reminderStage:
+        payload.status === "reminding"
+          ? payload.reminderStage ?? "first"
+          : null,
     },
   };
 }

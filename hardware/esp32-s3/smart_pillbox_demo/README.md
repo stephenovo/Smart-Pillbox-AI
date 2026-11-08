@@ -54,3 +54,29 @@ The script detects the Mac hotspot IP, updates only `SERVER_BASE_URL` in the
 ignored `config.h`, compiles and uploads the Slot 1 and Slot 2 firmware, and
 starts the local dashboard/API on port 3000. Keep the terminal open during the
 demo.
+
+The hardware demo command uses the dedicated Webpack development script
+(`npm run dev:webpack`). The normal `npm run dev` command remains on Next.js'
+default Turbopack path. Webpack avoids an observed Turbopack HMR panic
+(`Next.js package not found`) that repeatedly reloaded Studio and Dashboard
+during the physical demo. Live device data still updates automatically.
+
+## Switching to a different Wi-Fi or hotspot
+
+First connect the Mac to the Wi-Fi or hotspot that the ESP32 should use. For a
+standard WPA/WPA2 network with a name and password, connect the ESP32 Type-C
+data cable and run:
+
+```bash
+npm run demo:hardware:wifi
+```
+
+The command prompts for the SSID and hides the password while it is entered. It
+updates the ignored local `config.h`, detects the Mac's new LAN address, compiles
+and uploads the firmware, and starts the dashboard/API. The password is not
+printed and is not committed to Git.
+
+The ESP32 cannot automatically inherit the Mac's current network. Run this
+command again whenever the SSID or password changes. Captive-portal and
+enterprise/802.1X venue networks are not supported by this two-field setup; a
+phone hotspot is the more reliable demo fallback.

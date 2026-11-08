@@ -289,6 +289,7 @@ export class PilotStore {
     status: "idle" | "reminding",
     slot: number | null,
     now: string,
+    stage: "first" | "second" = "first",
   ) {
     await this.ensure(d, now);
     await this.db.batch([
@@ -300,14 +301,14 @@ export class PilotStore {
           status,
           slot,
           status === "reminding" ? now : null,
-          status === "reminding" ? "first" : null,
+          status === "reminding" ? stage : null,
           status === "reminding" ? "manual" : null,
           status === "reminding" ? crypto.randomUUID() : null,
           now,
           d.id,
           d.familyId,
         ),
-      this.audit(p, "reminder_changed", d.id, { status, slot }, now),
+      this.audit(p, "reminder_changed", d.id, { status, slot, stage }, now),
     ]);
     return this.state(d, now);
   }

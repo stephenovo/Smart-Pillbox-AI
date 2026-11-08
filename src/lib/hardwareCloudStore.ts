@@ -365,13 +365,16 @@ export async function getCloudHardwareState(
 export async function setCloudHardwareState(
   deviceId: string,
   status: "idle" | "reminding",
-  activeSlot: number | null
+  activeSlot: number | null,
+  options: {
+    reminderStage?: Exclude<HardwareReminderStage, null>;
+  } = {}
 ): Promise<HardwareDeviceState> {
   if (!isLiveHardwareDevice(deviceId)) {
-    return setHardwareDeviceState(deviceId, status, activeSlot);
+    return setHardwareDeviceState(deviceId, status, activeSlot, options);
   }
   const kv = cloudKV();
-  if (!kv) return setHardwareDeviceState(deviceId, status, activeSlot);
+  if (!kv) return setHardwareDeviceState(deviceId, status, activeSlot, options);
 
   const now = new Date();
   const current = await readState(kv, deviceId);
@@ -382,7 +385,8 @@ export async function setCloudHardwareState(
     scheduledAt: status === "reminding" ? now.toISOString() : null,
     message: status === "reminding" ? `Open Slot ${activeSlot}` : "No active reminder",
     trigger: status === "reminding" ? "manual" : null,
-    reminderStage: status === "reminding" ? "first" : null,
+    reminderStage:
+      status === "reminding" ? options.reminderStage ?? "first" : null,
     updatedAt: now.toISOString(),
   };
   await writeState(kv, deviceId, next);

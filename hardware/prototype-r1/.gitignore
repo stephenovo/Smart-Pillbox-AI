@@ -1,0 +1,11 @@
+# Reproducible release artifacts
+/stl/
+/views/
+/guide/
+/index.html
+/SHA256SUMS.txt
+
+# Local verification output
+/validation/*.log
+/scripts/__pycache__/
+*.py[cod]

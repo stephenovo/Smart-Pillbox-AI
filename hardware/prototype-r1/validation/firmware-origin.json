@@ -1,0 +1,9 @@
+{
+  "source": "hardware/esp32-s3/smart_pillbox_demo/smart_pillbox_demo.ino",
+  "sha256": "54a0d8f36458a89a4743bd20deecf57d1625cc864fb474e5ba04a492a6f0ed80",
+  "changes": [
+    "enable eight channels",
+    "buzzer GPIO38 -> GPIO40"
+  ],
+  "device_registration": "Use an existing paired account or register a device. Placeholder ID will not provision a device."
+}

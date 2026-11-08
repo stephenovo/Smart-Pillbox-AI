@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="650" viewBox="0 0 1000 650">
+<title>D06 线束与针号</title>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="PingFang SC,Noto Sans CJK SC,Arial,sans-serif">
+<text x="30" y="32" font-size="24" fill="#193239" text-anchor="start">D06 / 线束编号 · 针号是本设计定义</text>
+<text x="40" y="90" font-size="21" fill="#C55343" text-anchor="start">采购线束两端先用万用表逐针确认；模块端按丝印转接</text>
+<rect x="40" y="130" width="84" height="32" rx="3" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<text x="82" y="153" font-size="18" fill="#193239" text-anchor="middle">Slot 1</text>
+<text x="155" y="153" font-size="18" fill="#326DA8" text-anchor="start">JR1: 1=3V3  2=RAW1</text>
+<text x="470" y="153" font-size="18" fill="#326DA8" text-anchor="start">输入 GPIO4</text>
+<text x="700" y="153" font-size="18" fill="#137C78" text-anchor="start">JL1: GPIO8 → 330Ω → A</text>
+<rect x="40" y="178" width="84" height="32" rx="3" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<text x="82" y="201" font-size="18" fill="#193239" text-anchor="middle">Slot 2</text>
+<text x="155" y="201" font-size="18" fill="#326DA8" text-anchor="start">JR2: 1=3V3  2=RAW2</text>
+<text x="470" y="201" font-size="18" fill="#326DA8" text-anchor="start">输入 GPIO5</text>
+<text x="700" y="201" font-size="18" fill="#137C78" text-anchor="start">JL2: GPIO9 → 330Ω → A</text>
+<rect x="40" y="226" width="84" height="32" rx="3" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<text x="82" y="249" font-size="18" fill="#193239" text-anchor="middle">Slot 3</text>
+<text x="155" y="249" font-size="18" fill="#326DA8" text-anchor="start">JR3: 1=3V3  2=RAW3</text>
+<text x="470" y="249" font-size="18" fill="#326DA8" text-anchor="start">输入 GPIO6</text>
+<text x="700" y="249" font-size="18" fill="#137C78" text-anchor="start">JL3: GPIO10 → 330Ω → A</text>
+<rect x="40" y="274" width="84" height="32" rx="3" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<text x="82" y="297" font-size="18" fill="#193239" text-anchor="middle">Slot 4</text>
+<text x="155" y="297" font-size="18" fill="#326DA8" text-anchor="start">JR4: 1=3V3  2=RAW4</text>
+<text x="470" y="297" font-size="18" fill="#326DA8" text-anchor="start">输入 GPIO7</text>
+<text x="700" y="297" font-size="18" fill="#137C78" text-anchor="start">JL4: GPIO11 → 330Ω → A</text>
+<rect x="40" y="322" width="84" height="32" rx="3" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<text x="82" y="345" font-size="18" fill="#193239" text-anchor="middle">Slot 5</text>
+<text x="155" y="345" font-size="18" fill="#326DA8" text-anchor="start">JR5: 1=3V3  2=RAW5</text>
+<text x="470" y="345" font-size="18" fill="#326DA8" text-anchor="start">输入 GPIO15</text>
+<text x="700" y="345" font-size="18" fill="#137C78" text-anchor="start">JL5: GPIO12 → 330Ω → A</text>
+<rect x="40" y="370" width="84" height="32" rx="3" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<text x="82" y="393" font-size="18" fill="#193239" text-anchor="middle">Slot 6</text>
+<text x="155" y="393" font-size="18" fill="#326DA8" text-anchor="start">JR6: 1=3V3  2=RAW6</text>
+<text x="470" y="393" font-size="18" fill="#326DA8" text-anchor="start">输入 GPIO16</text>
+<text x="700" y="393" font-size="18" fill="#137C78" text-anchor="start">JL6: GPIO13 → 330Ω → A</text>
+<rect x="40" y="418" width="84" height="32" rx="3" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<text x="82" y="441" font-size="18" fill="#193239" text-anchor="middle">Slot 7</text>
+<text x="155" y="441" font-size="18" fill="#326DA8" text-anchor="start">JR7: 1=3V3  2=RAW7</text>
+<text x="470" y="441" font-size="18" fill="#326DA8" text-anchor="start">输入 GPIO17</text>
+<text x="700" y="441" font-size="18" fill="#137C78" text-anchor="start">JL7: GPIO14 → 330Ω → A</text>
+<rect x="40" y="466" width="84" height="32" rx="3" fill="#EDF3F2" stroke="#607780" stroke-width="2"/>
+<text x="82" y="489" font-size="18" fill="#193239" text-anchor="middle">Slot 8</text>
+<text x="155" y="489" font-size="18" fill="#326DA8" text-anchor="start">JR8: 1=3V3  2=RAW8</text>
+<text x="470" y="489" font-size="18" fill="#326DA8" text-anchor="start">输入 GPIO18</text>
+<text x="700" y="489" font-size="18" fill="#137C78" text-anchor="start">JL8: GPIO21 → 330Ω → A</text>
+<text x="45" y="563" font-size="20" fill="#193239" text-anchor="start">全部JL：1=LED阳极A；2=GND阴极K</text>
+<text x="45" y="599" font-size="20" fill="#193239" text-anchor="start">JOLED：1=3V3 / 2=GND / 3=SDA41 / 4=SCL42</text>
+<text x="45" y="635" font-size="19" fill="#193239" text-anchor="start">JRED：GPIO39；JPIEZO：1=3V3 / 2=Q1集电极；不要直接GPIO</text>
+</g></svg>

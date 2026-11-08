@@ -91,6 +91,9 @@ export async function POST(request: Request) {
     result.payload.deviceId,
     result.payload.status,
     result.payload.activeSlot ?? null,
+    {
+      reminderStage: result.payload.reminderStage ?? undefined,
+    },
   );
   return jsonResponse(state);
 }
