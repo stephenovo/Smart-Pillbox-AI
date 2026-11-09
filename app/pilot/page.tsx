@@ -49,11 +49,31 @@ async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
     ...options,
     headers: { "Content-Type": "application/json", ...options.headers },
     cache: "no-store",
+  }).catch(() => {
+    throw new Error(
+      "网络连接失败。若刚刚提交过修改，请先刷新核对结果，再决定是否重试。",
+    );
   });
-  const result = await response.json();
+  const result = await response.json().catch(() => {
+    throw new Error(
+      "服务暂时无法返回有效结果。请稍后刷新核对；若持续失败，请联系团队。",
+    );
+  });
   if (!response.ok)
     throw new ApiError(
-      `${result.error}${result.requestId ? `（请求编号 ${result.requestId}）` : ""}`,
+      `${
+        (
+          {
+            401: "访问码无效或登录已过期，请重新登录。",
+            403: "当前账号没有执行此操作的权限，请联系团队核对设备分配。",
+            409: "操作与当前状态冲突。请刷新记录核对；计划编辑可先保留草稿，再重新载入最新计划。",
+            429: "操作较频繁，请稍等后重试。",
+            503: "服务暂时不可用，请稍后重试；若持续失败，请联系团队。",
+          } as Record<number, string>
+        )[response.status] ??
+        result.error ??
+        "操作失败，请重试。"
+      }${result.requestId ? `（请求编号 ${result.requestId}）` : ""}`,
       response.status,
     );
   return result;
@@ -65,6 +85,11 @@ const emptySlot = (slotId: number): HardwarePlanSlot => ({
   highRisk: false,
   bufferTimeMinutes: 30,
 });
+const editableSlots = (plan: Snapshot["plan"]) =>
+  Array.from(
+    { length: 8 },
+    (_, i) => plan.slots.find((s) => s.slotId === i + 1) ?? emptySlot(i + 1),
+  );
 function time(value: string | null, zone: string) {
   return value
     ? new Intl.DateTimeFormat("zh-CN", {
@@ -93,6 +118,7 @@ export default function PilotPage() {
   const zone = device?.timeZone ?? "Asia/Hong_Kong";
   const fail = useCallback((err: unknown) => {
     if (err instanceof ApiError && err.status === 401) {
+      sequence.current++;
       setSession(null);
       setSnapshot(null);
       setSlots([]);
@@ -153,14 +179,7 @@ export default function PilotPage() {
           state,
           tasks: tasks.tasks,
         }));
-        if (replacePlan)
-          setSlots(
-            Array.from(
-              { length: 8 },
-              (_, i) =>
-                plan.slots.find((s) => s.slotId === i + 1) ?? emptySlot(i + 1),
-            ),
-          );
+        if (replacePlan) setSlots(editableSlots(plan));
       } catch (err) {
         if (current === sequence.current) fail(err);
       } finally {
@@ -226,6 +245,21 @@ export default function PilotPage() {
     });
   }
   const visible = snapshot?.deviceId === deviceId ? snapshot : null;
+  const dirty =
+    !!visible &&
+    JSON.stringify(slots) !== JSON.stringify(editableSlots(visible.plan));
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
+  function discardDraft() {
+    return !dirty || window.confirm("用药安排有未保存的修改，确定放弃吗？");
+  }
   function updateSlot(
     id: number,
     key: keyof HardwarePlanSlot,
@@ -284,6 +318,7 @@ export default function PilotPage() {
             disabled={busy}
             onClick={() =>
               void action(async () => {
+                if (!discardDraft()) return;
                 await api("session", { method: "DELETE" });
                 sequence.current++;
                 setSession(null);
@@ -333,39 +368,76 @@ export default function PilotPage() {
         </section>
       ) : (
         <>
-          <section className={styles.toolbar}>
-            <label>
-              照护设备
-              <select
-                value={deviceId}
-                disabled={busy || loading}
-                onChange={(e) => {
-                  setNotice("");
-                  setLoading(true);
-                  setDeviceId(e.target.value);
-                }}
-              >
-                {session.devices.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div>
-              <span>
-                {session.member.name} · {zone}
-              </span>
-              <button
-                disabled={busy || loading}
-                onClick={() => void refresh(deviceId, false)}
-              >
-                {loading ? "正在读取…" : "刷新记录"}
+          {!session.devices.length ? (
+            <section className={styles.panel}>
+              <h2>账号已登录，等待分配药盒</h2>
+              <p>
+                请联系团队为你的家庭分配设备。完成后点击下方按钮，继续设置用药安排。
+              </p>
+              <button disabled={busy} onClick={() => void action(loadSession)}>
+                重新检查设备分配
               </button>
-            </div>
-          </section>
+            </section>
+          ) : (
+            <section className={styles.toolbar}>
+              <label>
+                照护设备
+                <select
+                  value={deviceId}
+                  disabled={busy || loading}
+                  onChange={(e) => {
+                    if (!discardDraft()) return;
+                    setNotice("");
+                    setTitle("");
+                    setResolutions({});
+                    setLoading(true);
+                    setDeviceId(e.target.value);
+                  }}
+                >
+                  {session.devices.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div>
+                <span>
+                  {session.member.name} · {zone}
+                </span>
+                <button
+                  disabled={busy || loading}
+                  onClick={() => void refresh(deviceId, false)}
+                >
+                  {loading ? "正在读取…" : "刷新记录"}
+                </button>
+              </div>
+            </section>
+          )}
           {visible && (
             <>
+              <section className={styles.panel} aria-label="使用指引">
+                <h2>
+                  {visible.plan.slots.length
+                    ? "日常使用检查"
+                    : "开始设置你的药盒"}
+                </h2>
+                <ol>
+                  <li>
+                    <a href="#medication-plan">填写并保存用药时间安排</a>
+                    ，确认药格和时区。
+                  </li>
+                  <li>
+                    确认药盒已通电并连接网络，再刷新记录查看最近连接时间。
+                  </li>
+                  <li>
+                    查看设备事件；需要家人处理的情况，可添加跟进事项并记录结果。
+                  </li>
+                </ol>
+                <p>
+                  保存到服务器的计划，不代表药盒已收到。当前尚不能确认设备接收的计划版本，首次使用请与团队一起核对实际提醒。
+                </p>
+              </section>
               <section className={styles.cards} aria-label="设备概况">
                 <article>
                   <span>设备连接</span>
@@ -383,6 +455,11 @@ export default function PilotPage() {
                   <small>
                     最近心跳：{time(visible.state.lastSeenAt, zone)}
                   </small>
+                  {visible.state.connectionStatus !== "connected" && (
+                    <small>
+                      请检查药盒电源和网络，然后刷新记录。若仍未连接，请联系团队。
+                    </small>
+                  )}
                 </article>
                 <article>
                   <span>当前提醒</span>
@@ -614,17 +691,26 @@ export default function PilotPage() {
                   )}
                 </section>
               </div>
-              <section className={styles.panel}>
+              <section className={styles.panel} id="medication-plan">
                 <h2>用药时间安排</h2>
                 <p>
                   按已确认的用药方案填写。时间使用 {zone}
                   ；留空的药格不会触发提醒。计划变更会保留历史版本。
                 </p>
+                <p role="status">
+                  服务器计划版本：{visible.plan.version} ·{" "}
+                  {dirty ? "有未保存的修改" : "当前没有未保存的修改"}
+                </p>
+                {visible.state.status === "reminding" && (
+                  <p>
+                    当前提醒进行中。请先在下方处理并停止提醒，再保存新的安排。
+                  </p>
+                )}
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
                     void action(async () => {
-                      await api("plan", {
+                      const saved = await api<Snapshot["plan"]>("plan", {
                         method: "POST",
                         body: JSON.stringify({
                           deviceId,
@@ -634,87 +720,114 @@ export default function PilotPage() {
                           ),
                         }),
                       });
-                      await refresh(deviceId);
-                      setNotice("用药安排已保存。新的计划从保存后生效。");
+                      setSnapshot((old) =>
+                        old && old.deviceId === deviceId
+                          ? { ...old, plan: saved }
+                          : old,
+                      );
+                      setSlots(editableSlots(saved));
+                      setNotice(
+                        "用药安排已保存到服务器；尚未确认设备接收。请核对药盒连接和实际提醒。",
+                      );
+                      await refresh(deviceId, false);
                     });
                   }}
                 >
-                  <div className={styles.tableWrap}>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>药格</th>
-                          <th>药物名称</th>
-                          <th>提醒时间</th>
-                          <th>跟进等待时间（分钟）</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {slots.map((s) => (
-                          <tr key={s.slotId}>
-                            <th scope="row">{s.slotId}</th>
-                            <td data-label="药物名称">
-                              <input
-                                aria-label={`药格 ${s.slotId} 药物名称`}
-                                maxLength={120}
-                                value={s.medication}
-                                onChange={(e) =>
-                                  updateSlot(
-                                    s.slotId,
-                                    "medication",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </td>
-                            <td data-label="提醒时间">
-                              <input
-                                aria-label={`药格 ${s.slotId} 提醒时间`}
-                                type="time"
-                                required={!!s.medication.trim()}
-                                value={s.scheduledTime}
-                                onChange={(e) =>
-                                  updateSlot(
-                                    s.slotId,
-                                    "scheduledTime",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </td>
-                            <td data-label="等待时间（分钟）">
-                              <input
-                                aria-label={`药格 ${s.slotId} 等待时间`}
-                                type="number"
-                                required
-                                min={1}
-                                max={1440}
-                                value={s.bufferTimeMinutes}
-                                onChange={(e) =>
-                                  updateSlot(
-                                    s.slotId,
-                                    "bufferTimeMinutes",
-                                    Number(e.target.value),
-                                  )
-                                }
-                              />
-                            </td>
+                  <fieldset
+                    className={styles.planFields}
+                    disabled={busy || loading}
+                  >
+                    <div className={styles.tableWrap}>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>药格</th>
+                            <th>药物名称</th>
+                            <th>提醒时间</th>
+                            <th>跟进等待时间（分钟）</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className={styles.formActions}>
-                    <button disabled={busy || loading}>保存安排</button>
-                    <button
-                      type="button"
-                      className={styles.secondary}
-                      disabled={busy || loading}
-                      onClick={() => void refresh(deviceId)}
-                    >
-                      放弃编辑并重新载入计划
-                    </button>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {slots.map((s) => (
+                            <tr key={s.slotId}>
+                              <th scope="row">{s.slotId}</th>
+                              <td data-label="药物名称">
+                                <input
+                                  aria-label={`药格 ${s.slotId} 药物名称`}
+                                  maxLength={120}
+                                  required={!!s.scheduledTime}
+                                  pattern={
+                                    s.scheduledTime ? ".*\\S.*" : undefined
+                                  }
+                                  value={s.medication}
+                                  onChange={(e) =>
+                                    updateSlot(
+                                      s.slotId,
+                                      "medication",
+                                      e.target.value,
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td data-label="提醒时间">
+                                <input
+                                  aria-label={`药格 ${s.slotId} 提醒时间`}
+                                  type="time"
+                                  required={!!s.medication.trim()}
+                                  value={s.scheduledTime}
+                                  onChange={(e) =>
+                                    updateSlot(
+                                      s.slotId,
+                                      "scheduledTime",
+                                      e.target.value,
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td data-label="等待时间（分钟）">
+                                <input
+                                  aria-label={`药格 ${s.slotId} 等待时间`}
+                                  type="number"
+                                  required
+                                  min={1}
+                                  max={1440}
+                                  value={s.bufferTimeMinutes}
+                                  onChange={(e) =>
+                                    updateSlot(
+                                      s.slotId,
+                                      "bufferTimeMinutes",
+                                      Number(e.target.value),
+                                    )
+                                  }
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className={styles.formActions}>
+                      <button
+                        disabled={
+                          busy ||
+                          loading ||
+                          visible.state.status === "reminding"
+                        }
+                      >
+                        保存安排
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.secondary}
+                        disabled={busy || loading}
+                        onClick={() => {
+                          if (discardDraft()) void refresh(deviceId);
+                        }}
+                      >
+                        放弃编辑并重新载入计划
+                      </button>
+                    </div>
+                  </fieldset>
                 </form>
               </section>
               {visible.state.status === "reminding" && (
@@ -745,7 +858,7 @@ export default function PilotPage() {
               )}
             </>
           )}
-          {!visible && !loading && (
+          {!!deviceId && !visible && !loading && (
             <button onClick={() => void refresh(deviceId)}>重新读取设备</button>
           )}
         </>

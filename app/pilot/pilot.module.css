@@ -352,3 +352,9 @@
   flex-wrap: wrap;
   gap: 12px;
 }
+.planFields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
