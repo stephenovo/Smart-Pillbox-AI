@@ -314,6 +314,8 @@ to the internal testing group.
 - [Hardware API and parts guide](docs/hardware/README.md)
 - [Hardware MVP checklist](docs/hardware/MVP_CHECKLIST.md)
 - [ESP32-S3 firmware README](hardware/esp32-s3/smart_pillbox_demo/README.md)
+- [Eight-slot R1 prototype source package](hardware/prototype-r1/README.md)
+- [Industrial design concept renders](docs/design/pillbox-concept-v1/README.md)
 
 ## Roadmap
 
@@ -324,7 +326,8 @@ to the internal testing group.
 - [x] Profile sync with local offline recovery
 - [x] Native iOS TestFlight Build 14 with instant `IFF 2026` showcase data, live hardware pairing, and distinct AI Insights and Notes
 - [x] Cloud-backed `20260808` account shared by the physical device, Studio, and iPhone app
-- [ ] Expand hardware from the MVP loop to a production-ready enclosure
+- [x] Publish the parameterized eight-slot R1 enclosure, wiring, firmware, and validation source package
+- [ ] Print, electrically validate, and revise the R1 enclosure into a production-ready design
 - [ ] Collect real-device adherence history for model calibration
 - [ ] Replace the demo connect code with per-device production authentication and observability
 - [ ] Complete App Store release workflow and accessibility audit

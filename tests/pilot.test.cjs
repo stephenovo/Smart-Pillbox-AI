@@ -208,6 +208,35 @@ test("caregiver cannot forge hardware observations or heartbeats", async () => {
     403,
   );
 });
+test("caregiver reminder commands preserve the selected alert stage", async () => {
+  const f = fixture();
+  await plan(f);
+  const secondAlert = await f.request("state", {
+    method: "POST",
+    body: {
+      deviceId: "box-a",
+      status: "reminding",
+      activeSlot: 1,
+      reminderStage: "second",
+    },
+  });
+  assert.equal(secondAlert.status, 200);
+  assert.equal(secondAlert.body.reminderStage, "second");
+  assert.equal(
+    (
+      await f.request("state", {
+        method: "POST",
+        body: {
+          deviceId: "box-a",
+          status: "reminding",
+          activeSlot: 1,
+          reminderStage: "third",
+        },
+      })
+    ).status,
+    400,
+  );
+});
 test("session cookie is signed, expiring, HttpOnly, Secure and immediately revocable", async () => {
   const f = fixture();
   const login = await f.request("session", {

@@ -1,0 +1,207 @@
+[
+  {
+    "case": "closed",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-1-0deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-1-30deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-1-60deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-1-90deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-1-100deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-2-0deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-2-30deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-2-60deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-2-90deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-2-100deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-3-0deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-3-30deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-3-60deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-3-90deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-3-100deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-4-0deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-4-30deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-4-60deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-4-90deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-4-100deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-5-0deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-5-30deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-5-60deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-5-90deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-5-100deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-6-0deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-6-30deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-6-60deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-6-90deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-6-100deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-7-0deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-7-30deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-7-60deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-7-90deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-7-100deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-8-0deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-8-30deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-8-60deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-8-90deg",
+    "passed": true,
+    "result": "empty intersection"
+  },
+  {
+    "case": "lid-8-100deg",
+    "passed": true,
+    "result": "empty intersection"
+  }
+]

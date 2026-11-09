@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
   BellRing,
@@ -21,6 +21,7 @@ import {
   Radio,
   RefreshCw,
   Router,
+  RotateCcw,
   ShieldCheck,
   Signal,
   Square,
@@ -30,7 +31,6 @@ import {
   Zap,
 } from "lucide-react";
 
-import { HARDWARE_DEMO_SLOT_ID } from "../../src/lib/hardwareDemoConfig";
 import {
   LIVE_HARDWARE_CONNECT_CODE,
   LIVE_HARDWARE_DEVICE_ID,
@@ -40,6 +40,7 @@ import type {
   HardwareEventsApiResponse,
   HardwarePlanApiResponse,
   HardwarePlanSlot,
+  HardwareReminderStage,
 } from "../../src/types/hardware";
 import type {
   HardwareTelemetry,
@@ -48,6 +49,10 @@ import type {
 import type { OpeningEvent } from "../../src/types/pillbox";
 
 type LoadState = "loading" | "ready" | "error";
+type ShowcasePhase = "ready" | "first" | "quiet" | "second" | "completed";
+
+const FIRST_ALERT_DURATION_MS = 6_000;
+const QUIET_WINDOW_MS = 8_000;
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return "Not reported";
@@ -139,9 +144,18 @@ export default function StudioConsole() {
   const [lastRefreshAt, setLastRefreshAt] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [commandPending, setCommandPending] = useState(false);
+  const [resetConfirmationOpen, setResetConfirmationOpen] = useState(false);
   const [notice, setNotice] = useState("");
+  const [showcaseSlot, setShowcaseSlot] = useState(1);
+  const [showcasePhase, setShowcasePhase] = useState<ShowcasePhase>("ready");
+  const [showcaseStartedAt, setShowcaseStartedAt] = useState<string | null>(null);
+  const showcaseRunToken = useRef(0);
+  const resetInProgress = useRef(false);
+  const studioRequestId = useRef(0);
 
   const loadStudio = useCallback(async (quiet = false) => {
+    if (resetInProgress.current) return;
+    const requestId = ++studioRequestId.current;
     if (!quiet) setLoadState("loading");
 
     try {
@@ -174,6 +188,7 @@ export default function StudioConsole() {
         planResponse.json() as Promise<HardwarePlanApiResponse>,
       ]);
 
+      if (requestId !== studioRequestId.current) return;
       setDeviceState(nextState);
       setTelemetry(telemetryData.telemetry);
       setEvents(eventsData.events);
@@ -181,6 +196,7 @@ export default function StudioConsole() {
       setLastRefreshAt(new Date().toISOString());
       setLoadState("ready");
     } catch (error) {
+      if (requestId !== studioRequestId.current) return;
       setLoadState("error");
       setNotice(error instanceof Error ? error.message : "Studio refresh failed.");
     }
@@ -201,6 +217,31 @@ export default function StudioConsole() {
     return () => window.clearInterval(intervalId);
   }, [autoRefresh, loadStudio]);
 
+  useEffect(() => {
+    if (!showcaseStartedAt || showcasePhase === "ready" || showcasePhase === "completed") {
+      return;
+    }
+
+    const completedByPhysicalOpening = events.some(
+      (event) =>
+        !eventIsSimulation(event) &&
+        !eventIsStudioTest(event) &&
+        event.compartment === showcaseSlot &&
+        new Date(event.receivedAt).getTime() >=
+          new Date(showcaseStartedAt).getTime()
+    );
+    if (!completedByPhysicalOpening) return;
+
+    const timeoutId = window.setTimeout(() => {
+      showcaseRunToken.current += 1;
+      setShowcasePhase("completed");
+      setNotice(
+        `Dose Completed: physical Slot ${showcaseSlot} opening detected. All later reminders were cancelled.`
+      );
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [events, showcasePhase, showcaseSlot, showcaseStartedAt]);
+
   const isConnected = deviceState?.connectionStatus === "connected";
   const simulatedEventCount = useMemo(
     () => events.filter(eventIsSimulation).length,
@@ -211,35 +252,117 @@ export default function StudioConsole() {
     [events]
   );
   const realEventCount = events.length - simulatedEventCount - studioTestEventCount;
-  const activePlan = plan.find((slot) => slot.slotId === HARDWARE_DEMO_SLOT_ID);
+  const activePlan = plan.find((slot) => slot.slotId === showcaseSlot);
 
-  async function setReminder(status: "idle" | "reminding") {
+  async function sendReminderCommand(
+    status: "idle" | "reminding",
+    reminderStage: Exclude<HardwareReminderStage, null>,
+    slotId: number
+  ): Promise<void> {
+    const response = await fetch("/api/hardware/state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        deviceId: LIVE_HARDWARE_DEVICE_ID,
+        status,
+        activeSlot: status === "reminding" ? slotId : null,
+        reminderStage: status === "reminding" ? reminderStage : null,
+      }),
+    });
+    if (!response.ok) {
+      const body = (await response.json().catch(() => null)) as
+        | { error?: string }
+        | null;
+      throw new Error(body?.error ?? "Command was not accepted.");
+    }
+    await loadStudio(true);
+  }
+
+  async function physicalOpeningOccurredSince(
+    startedAt: string,
+    slotId: number
+  ): Promise<boolean> {
+    const deviceId = encodeURIComponent(LIVE_HARDWARE_DEVICE_ID);
+    const response = await fetch(
+      `/api/hardware/events?deviceId=${deviceId}&limit=40`,
+      { cache: "no-store" }
+    );
+    if (!response.ok) return false;
+    const data = (await response.json()) as HardwareEventsApiResponse;
+    const startedAtMs = new Date(startedAt).getTime();
+    return data.events.some(
+      (event) =>
+        !eventIsSimulation(event) &&
+        !eventIsStudioTest(event) &&
+        event.compartment === slotId &&
+        new Date(event.receivedAt).getTime() >= startedAtMs
+    );
+  }
+
+  async function startAutomaticShowcase() {
+    const slotId = showcaseSlot;
+    const startedAt = new Date().toISOString();
+    const token = showcaseRunToken.current + 1;
+    showcaseRunToken.current = token;
+    setShowcaseStartedAt(startedAt);
+    setShowcasePhase("first");
     setCommandPending(true);
-    setNotice("");
+    setNotice(`Automatic showcase started for Slot ${slotId}: First Alert.`);
+
     try {
-      const response = await fetch("/api/hardware/state", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          deviceId: LIVE_HARDWARE_DEVICE_ID,
-          status,
-          activeSlot: status === "reminding" ? HARDWARE_DEMO_SLOT_ID : null,
-        }),
-      });
-      if (!response.ok) {
-        const body = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
-        throw new Error(body?.error ?? "Command was not accepted.");
-      }
-      setNotice(
-        status === "reminding"
-          ? "Reminder command accepted. The device will pick it up on its next poll."
-          : "Stop command accepted."
+      await sendReminderCommand("reminding", "first", slotId);
+      setCommandPending(false);
+      await new Promise((resolve) =>
+        window.setTimeout(resolve, FIRST_ALERT_DURATION_MS)
       );
-      await loadStudio(true);
+      if (showcaseRunToken.current !== token) return;
+
+      await sendReminderCommand("idle", "first", slotId);
+      if (showcaseRunToken.current !== token) return;
+      setShowcasePhase("quiet");
+      setNotice(
+        `First Alert finished. Waiting ${QUIET_WINDOW_MS / 1000} seconds for a lid opening.`
+      );
+
+      await new Promise((resolve) => window.setTimeout(resolve, QUIET_WINDOW_MS));
+      if (showcaseRunToken.current !== token) return;
+      const openingOccurred = await physicalOpeningOccurredSince(startedAt, slotId);
+      if (showcaseRunToken.current !== token) return;
+      if (openingOccurred) {
+        showcaseRunToken.current += 1;
+        setShowcasePhase("completed");
+        setNotice(
+          `Dose Completed: physical Slot ${slotId} opening detected. Second Alert was cancelled.`
+        );
+        await loadStudio(true);
+        return;
+      }
+
+      setShowcasePhase("second");
+      setNotice(
+        `No lid opening detected. Second Alert started automatically for Slot ${slotId}.`
+      );
+      await sendReminderCommand("reminding", "second", slotId);
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Command failed.");
+      if (showcaseRunToken.current !== token) return;
+      showcaseRunToken.current += 1;
+      setShowcasePhase("ready");
+      setNotice(error instanceof Error ? error.message : "Showcase failed.");
+    } finally {
+      if (!resetInProgress.current) setCommandPending(false);
+    }
+  }
+
+  async function stopAutomaticShowcase() {
+    showcaseRunToken.current += 1;
+    setCommandPending(true);
+    try {
+      await sendReminderCommand("idle", "first", showcaseSlot);
+      setShowcasePhase("ready");
+      setShowcaseStartedAt(null);
+      setNotice("Showcase stopped and reset. The device is ready for another run.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Stop command failed.");
     } finally {
       setCommandPending(false);
     }
@@ -266,13 +389,44 @@ export default function StudioConsole() {
         throw new Error(body?.error ?? "The test opening was not recorded.");
       }
       setNotice(
-        `Studio recorded a Slot ${slotId} test opening. The iPhone app will receive it on its next refresh.`
+        `Studio recorded a Slot ${slotId} test opening. Connected demo clients will receive it on their next refresh.`
       );
       await loadStudio(true);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Test opening failed.");
     } finally {
       setCommandPending(false);
+    }
+  }
+
+  async function resetDemo() {
+    if (commandPending || resetInProgress.current) return;
+    resetInProgress.current = true;
+    studioRequestId.current += 1;
+    showcaseRunToken.current += 1;
+    setCommandPending(true);
+    setShowcasePhase("ready");
+    setShowcaseStartedAt(null);
+    setNotice("");
+
+    try {
+      await sendReminderCommand("idle", "first", showcaseSlot);
+      const response = await fetch(
+        `/api/hardware/events?deviceId=${encodeURIComponent(LIVE_HARDWARE_DEVICE_ID)}`,
+        { method: "DELETE" }
+      );
+      if (!response.ok) {
+        throw new Error("The reminder was stopped, but the event history could not be cleared. Try resetting again.");
+      }
+      setEvents([]);
+      setResetConfirmationOpen(false);
+      setNotice("Demo reset. Opening history cleared and the reminder stop command sent. Your medication plan and device connection are unchanged.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Demo reset failed. Please try again.");
+    } finally {
+      resetInProgress.current = false;
+      setCommandPending(false);
+      await loadStudio(true);
     }
   }
 
@@ -369,7 +523,7 @@ export default function StudioConsole() {
             <button
               type="button"
               onClick={() => void loadStudio()}
-              disabled={loadState === "loading"}
+              disabled={loadState === "loading" || commandPending}
               className="inline-flex items-center gap-2 rounded-lg bg-action px-3 py-2 text-sm font-semibold text-on-action transition hover:bg-action-hover disabled:opacity-60"
             >
               {loadState === "loading" ? (
@@ -379,8 +533,57 @@ export default function StudioConsole() {
               )}
               Refresh
             </button>
+            <button
+              type="button"
+              onClick={() => setResetConfirmationOpen(true)}
+              disabled={commandPending}
+              aria-expanded={resetConfirmationOpen}
+              aria-controls="reset-demo-confirmation"
+              className="inline-flex items-center gap-2 rounded-lg border border-coral-line bg-coral-soft px-3 py-2 text-sm font-semibold text-coral-ink transition hover:brightness-95 disabled:opacity-50"
+            >
+              <RotateCcw aria-hidden="true" size={15} /> Reset demo
+            </button>
           </div>
         </section>
+
+        {resetConfirmationOpen ? (
+          <section
+            id="reset-demo-confirmation"
+            aria-labelledby="reset-demo-heading"
+            className="mt-5 rounded-xl border border-coral-line bg-coral-soft p-5"
+          >
+            <h2 id="reset-demo-heading" className="font-bold text-coral-ink">Reset this demo?</h2>
+            <p className="mt-2 text-sm leading-6 text-ink">
+              Stop this Studio showcase and delete all opening records for {LIVE_HARDWARE_DEVICE_ID},
+              including physical openings and test events. This cannot be undone.
+              The medication plan, pairing, and connection settings will be kept.
+              Dashboard and apps using this same server will see the cleared history on their next refresh.
+            </p>
+            <p className="mt-2 text-xs leading-5 text-ink-soft">
+              Keep the lids closed while resetting. New or queued device events can still arrive.
+              An offline device will receive the stop command when it reconnects.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setResetConfirmationOpen(false)}
+                disabled={commandPending}
+                className="rounded-lg border border-line bg-surface px-4 py-2 text-sm font-semibold disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void resetDemo()}
+                disabled={commandPending}
+                className="inline-flex items-center gap-2 rounded-lg bg-action px-4 py-2 text-sm font-semibold text-on-action disabled:opacity-50"
+              >
+                {commandPending ? <LoaderCircle aria-hidden="true" size={15} className="animate-spin" /> : null}
+                {commandPending ? "Resetting…" : "Stop reminder and clear history"}
+              </button>
+            </div>
+          </section>
+        ) : null}
 
         {notice ? (
           <div className="mt-5 flex items-start gap-3 rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink shadow-card">
@@ -576,9 +779,9 @@ export default function StudioConsole() {
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-faint">
-                    Remote command
+                    Live hardware showcase
                   </p>
-                  <h2 className="mt-1 text-lg font-bold">Reminder control</h2>
+                  <h2 className="mt-1 text-lg font-bold">Two-stage reminder demo</h2>
                 </div>
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${
                   deviceState?.status === "reminding"
@@ -589,11 +792,38 @@ export default function StudioConsole() {
                 </div>
               </div>
 
+              <p className="mt-4 text-sm leading-6 text-ink-soft">
+                Choose a real compartment and start the automated alert sequence,
+                then open that lid. A valid physical opening marks the dose completed
+                and cancels every later alert automatically.
+              </p>
+
+              <div className="mt-4 grid grid-cols-2 gap-2" aria-label="Showcase slot">
+                {[1, 2].map((slotId) => (
+                  <button
+                    key={slotId}
+                    type="button"
+                    onClick={() => setShowcaseSlot(slotId)}
+                    disabled={
+                      commandPending ||
+                      (showcasePhase !== "ready" && showcasePhase !== "completed")
+                    }
+                    className={`rounded-xl border px-3 py-2.5 text-sm font-bold transition disabled:opacity-50 ${
+                      showcaseSlot === slotId
+                        ? "border-sky-line bg-sky-soft text-sky-ink"
+                        : "border-line bg-surface text-ink-soft hover:bg-cream-deep"
+                    }`}
+                  >
+                    Slot {slotId}
+                  </button>
+                ))}
+              </div>
+
               <div className="mt-5 rounded-xl border border-line-soft bg-cream p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-xs font-semibold text-ink-soft">Target</p>
-                    <p className="mt-1 font-bold">Slot {HARDWARE_DEMO_SLOT_ID}</p>
+                    <p className="mt-1 font-bold">Slot {showcaseSlot}</p>
                   </div>
                   <ChevronRight aria-hidden="true" size={17} className="text-ink-faint" />
                   <div className="min-w-0 text-right">
@@ -601,32 +831,55 @@ export default function StudioConsole() {
                     <p className="mt-1 truncate font-bold">{activePlan?.medication || "Not configured"}</p>
                   </div>
                 </div>
+                <div className="mt-3 flex items-center justify-between border-t border-line-soft pt-3 text-xs">
+                  <span className="font-semibold text-ink-soft">Current stage</span>
+                  <span className="rounded-full bg-surface px-2.5 py-1 font-bold text-ink">
+                    {showcasePhase === "first"
+                      ? "FIRST ALERT"
+                      : showcasePhase === "quiet"
+                        ? "WAITING FOR OPENING"
+                        : showcasePhase === "second"
+                          ? "SECOND ALERT"
+                          : showcasePhase === "completed"
+                            ? "DOSE COMPLETED"
+                            : "READY"}
+                  </span>
+                </div>
               </div>
 
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => void setReminder("reminding")}
-                  disabled={commandPending}
+                  onClick={() => void startAutomaticShowcase()}
+                  disabled={
+                    commandPending ||
+                    (showcasePhase !== "ready" && showcasePhase !== "completed")
+                  }
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-action px-3 py-3 text-sm font-semibold text-on-action transition hover:bg-action-hover disabled:opacity-50"
                 >
-                  <BellRing aria-hidden="true" size={16} /> Ring now
+                  <BellRing aria-hidden="true" size={16} /> Start Showcase
                 </button>
                 <button
                   type="button"
-                  onClick={() => void setReminder("idle")}
+                  onClick={() => void stopAutomaticShowcase()}
                   disabled={commandPending}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-line px-3 py-3 text-sm font-semibold text-ink transition hover:bg-cream-deep disabled:opacity-50"
                 >
                   <Square aria-hidden="true" size={15} /> Stop
                 </button>
               </div>
+              <ol className="mt-4 space-y-2 rounded-xl border border-mint-line bg-mint-soft p-4 text-xs leading-5 text-ink-soft">
+                <li><strong className="text-ink">1.</strong> First Alert runs for 6 seconds: slot LED + one-chime pattern.</li>
+                <li><strong className="text-ink">2.</strong> The device becomes quiet and waits 8 seconds for a real opening.</li>
+                <li><strong className="text-ink">3.</strong> If still unopened, Second Alert starts automatically with OLED + two-chime pattern.</li>
+                <li><strong className="text-ink">4.</strong> Open the selected lid at any point: Dose Completed, all later alerts stop.</li>
+              </ol>
               <div className="mt-5 border-t border-line-soft pt-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-faint">
                   App link test
                 </p>
                 <p className="mt-2 text-xs leading-5 text-ink-soft">
-                  Record a clearly labelled Studio test opening, then confirm it appears in the connected iPhone app.
+                  Record a clearly labelled Studio test opening, then confirm it appears in a connected demo client.
                 </p>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   {[1, 2].map((slotId) => (

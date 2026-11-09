@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:webpack": "next dev --webpack",
     "demo:hardware": "bash scripts/start-hardware-demo.sh",
+    "demo:hardware:wifi": "bash scripts/start-hardware-demo.sh --configure-wifi",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -20,21 +22,21 @@
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
-    "next": "16.2.11",
+    "next": "16.4.5",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "1.20.2",
-    "@tailwindcss/postcss": "^4",
+    "@opennextjs/cloudflare": "1.20.16",
+    "@tailwindcss/postcss": "^4.3.5",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.11",
-    "tailwindcss": "^4",
+    "eslint-config-next": "16.4.5",
+    "tailwindcss": "^4.3.5",
     "typescript": "^5",
-    "wrangler": "4.118.0"
+    "wrangler": "4.158.0"
   },
   "engines": {
     "node": ">=22.13.0"

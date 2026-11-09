@@ -69,6 +69,7 @@ export type HardwareDeviceStateMutation = {
   deviceId: string;
   status: HardwareReminderStatus;
   activeSlot?: number | null;
+  reminderStage?: HardwareReminderStage;
 };
 
 export type HardwareShadowDecision = {

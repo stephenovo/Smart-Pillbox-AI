@@ -1,0 +1,512 @@
+[
+  {
+    "file": "01-base.stl",
+    "triangles": 4168,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 228323.85,
+    "bounds_mm": [
+      [
+        0.0,
+        216.0
+      ],
+      [
+        0.0,
+        184.0
+      ],
+      [
+        0.0,
+        54.0
+      ]
+    ],
+    "size_mm": [
+      216.0,
+      184.0,
+      54.0
+    ],
+    "passed": true
+  },
+  {
+    "file": "02-deck.stl",
+    "triangles": 19472,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 83485.96,
+    "bounds_mm": [
+      [
+        0.0,
+        216.0
+      ],
+      [
+        0.0,
+        184.0
+      ],
+      [
+        0.0,
+        11.8
+      ]
+    ],
+    "size_mm": [
+      216.0,
+      184.0,
+      11.8
+    ],
+    "passed": true
+  },
+  {
+    "file": "03-cup.stl",
+    "triangles": 620,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 10135.14,
+    "bounds_mm": [
+      [
+        -22.0,
+        22.0
+      ],
+      [
+        -21.0,
+        21.0
+      ],
+      [
+        0.0,
+        24.0
+      ]
+    ],
+    "size_mm": [
+      44.0,
+      42.0,
+      24.0
+    ],
+    "passed": true
+  },
+  {
+    "file": "04-lid-1.stl",
+    "triangles": 1054,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 6027.91,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -31.0,
+        27.7
+      ],
+      [
+        0.0,
+        6.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      58.7,
+      6.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "04-lid-2.stl",
+    "triangles": 1506,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 6023.97,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -31.0,
+        27.7
+      ],
+      [
+        0.0,
+        6.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      58.7,
+      6.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "04-lid-3.stl",
+    "triangles": 1678,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 6023.71,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -31.0,
+        27.7
+      ],
+      [
+        0.0,
+        6.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      58.7,
+      6.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "04-lid-4.stl",
+    "triangles": 1150,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 6024.5,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -31.0,
+        27.7
+      ],
+      [
+        0.0,
+        6.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      58.7,
+      6.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "04-lid-5.stl",
+    "triangles": 1430,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 6022.34,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -31.0,
+        27.7
+      ],
+      [
+        0.0,
+        6.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      58.7,
+      6.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "04-lid-6.stl",
+    "triangles": 1658,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 6021.32,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -31.0,
+        27.7
+      ],
+      [
+        0.0,
+        6.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      58.7,
+      6.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "04-lid-7.stl",
+    "triangles": 1226,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 6029.62,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -31.0,
+        27.7
+      ],
+      [
+        0.0,
+        6.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      58.7,
+      6.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "04-lid-8.stl",
+    "triangles": 1830,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 6019.76,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -31.0,
+        27.7
+      ],
+      [
+        0.0,
+        6.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      58.7,
+      6.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "05-magnet-cap.stl",
+    "triangles": 188,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 18.94,
+    "bounds_mm": [
+      [
+        -3.05,
+        3.05
+      ],
+      [
+        -3.05,
+        3.05
+      ],
+      [
+        0.0,
+        0.65
+      ]
+    ],
+    "size_mm": [
+      6.1,
+      6.1,
+      0.65
+    ],
+    "passed": true
+  },
+  {
+    "file": "06-electronics-carrier.stl",
+    "triangles": 8332,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 43919.32,
+    "bounds_mm": [
+      [
+        0.0,
+        184.0
+      ],
+      [
+        0.0,
+        132.0
+      ],
+      [
+        0.0,
+        2.0
+      ]
+    ],
+    "size_mm": [
+      184.0,
+      132.0,
+      2.0
+    ],
+    "passed": true
+  },
+  {
+    "file": "07-oled-backplate.stl",
+    "triangles": 1592,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 2660.54,
+    "bounds_mm": [
+      [
+        -23.0,
+        23.0
+      ],
+      [
+        -15.0,
+        15.0
+      ],
+      [
+        0.0,
+        2.4
+      ]
+    ],
+    "size_mm": [
+      46.0,
+      30.0,
+      2.4
+    ],
+    "passed": true
+  },
+  {
+    "file": "08-oled-spacer.stl",
+    "triangles": 384,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 142.1,
+    "bounds_mm": [
+      [
+        -3.0,
+        3.0
+      ],
+      [
+        -3.0,
+        3.0
+      ],
+      [
+        0.0,
+        6.0
+      ]
+    ],
+    "size_mm": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "passed": true
+  },
+  {
+    "file": "09-fit-coupon.stl",
+    "triangles": 9044,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 27725.57,
+    "bounds_mm": [
+      [
+        0.0,
+        92.0
+      ],
+      [
+        0.0,
+        62.0
+      ],
+      [
+        0.0,
+        5.0
+      ]
+    ],
+    "size_mm": [
+      92.0,
+      62.0,
+      5.0
+    ],
+    "passed": true
+  },
+  {
+    "file": "10-single-cell-fixture.stl",
+    "triangles": 2052,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "inconsistent_edges": 0,
+    "degenerate_triangles": 0,
+    "components": 1,
+    "volume_mm3": 11204.36,
+    "bounds_mm": [
+      [
+        -25.0,
+        25.0
+      ],
+      [
+        -33.0,
+        33.0
+      ],
+      [
+        0.0,
+        36.8
+      ]
+    ],
+    "size_mm": [
+      50.0,
+      66.0,
+      36.8
+    ],
+    "passed": true
+  }
+]

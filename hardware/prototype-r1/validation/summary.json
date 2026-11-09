@@ -1,0 +1,15 @@
+{
+  "status": "Digital checks passed; physical prototype unbuilt",
+  "stl_files": 17,
+  "svg_sheets": 8,
+  "cad_views": 5,
+  "guide_pages": 20,
+  "pin_map_matches_firmware": true,
+  "unique_GPIOs": 20,
+  "html_local_links_valid": true,
+  "mesh_report": "mesh-report.json",
+  "assembly_report": "assembly-report.json",
+  "physical_tests": "Not performed; see electronics/acceptance.csv",
+  "bringup_firmware_compiled": true,
+  "integrated_firmware_compiled": true
+}
